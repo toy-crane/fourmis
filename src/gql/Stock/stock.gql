@@ -1,0 +1,6 @@
+type Stock {
+  id: ID!
+  symbol: String!
+  engName: String!
+  korName: String!
+}

@@ -2,7 +2,11 @@
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-export const typeDefs = /* GraphQL */ `type AggregateUser {
+export const typeDefs = /* GraphQL */ `type AggregateStock {
+  count: Int!
+}
+
+type AggregateUser {
   count: Int!
 }
 
@@ -13,6 +17,12 @@ type BatchPayload {
 scalar Long
 
 type Mutation {
+  createStock(data: StockCreateInput!): Stock!
+  updateStock(data: StockUpdateInput!, where: StockWhereUniqueInput!): Stock
+  updateManyStocks(data: StockUpdateManyMutationInput!, where: StockWhereInput): BatchPayload!
+  upsertStock(where: StockWhereUniqueInput!, create: StockCreateInput!, update: StockUpdateInput!): Stock!
+  deleteStock(where: StockWhereUniqueInput!): Stock
+  deleteManyStocks(where: StockWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -39,13 +49,159 @@ type PageInfo {
 }
 
 type Query {
+  stock(where: StockWhereUniqueInput!): Stock
+  stocks(where: StockWhereInput, orderBy: StockOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Stock]!
+  stocksConnection(where: StockWhereInput, orderBy: StockOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): StockConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   node(id: ID!): Node
 }
 
+type Stock {
+  id: ID!
+  symbol: String!
+  engName: String!
+  korName: String!
+}
+
+type StockConnection {
+  pageInfo: PageInfo!
+  edges: [StockEdge]!
+  aggregate: AggregateStock!
+}
+
+input StockCreateInput {
+  id: ID
+  symbol: String!
+  engName: String!
+  korName: String!
+}
+
+type StockEdge {
+  node: Stock!
+  cursor: String!
+}
+
+enum StockOrderByInput {
+  id_ASC
+  id_DESC
+  symbol_ASC
+  symbol_DESC
+  engName_ASC
+  engName_DESC
+  korName_ASC
+  korName_DESC
+}
+
+type StockPreviousValues {
+  id: ID!
+  symbol: String!
+  engName: String!
+  korName: String!
+}
+
+type StockSubscriptionPayload {
+  mutation: MutationType!
+  node: Stock
+  updatedFields: [String!]
+  previousValues: StockPreviousValues
+}
+
+input StockSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: StockWhereInput
+  AND: [StockSubscriptionWhereInput!]
+  OR: [StockSubscriptionWhereInput!]
+  NOT: [StockSubscriptionWhereInput!]
+}
+
+input StockUpdateInput {
+  symbol: String
+  engName: String
+  korName: String
+}
+
+input StockUpdateManyMutationInput {
+  symbol: String
+  engName: String
+  korName: String
+}
+
+input StockWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  symbol: String
+  symbol_not: String
+  symbol_in: [String!]
+  symbol_not_in: [String!]
+  symbol_lt: String
+  symbol_lte: String
+  symbol_gt: String
+  symbol_gte: String
+  symbol_contains: String
+  symbol_not_contains: String
+  symbol_starts_with: String
+  symbol_not_starts_with: String
+  symbol_ends_with: String
+  symbol_not_ends_with: String
+  engName: String
+  engName_not: String
+  engName_in: [String!]
+  engName_not_in: [String!]
+  engName_lt: String
+  engName_lte: String
+  engName_gt: String
+  engName_gte: String
+  engName_contains: String
+  engName_not_contains: String
+  engName_starts_with: String
+  engName_not_starts_with: String
+  engName_ends_with: String
+  engName_not_ends_with: String
+  korName: String
+  korName_not: String
+  korName_in: [String!]
+  korName_not_in: [String!]
+  korName_lt: String
+  korName_lte: String
+  korName_gt: String
+  korName_gte: String
+  korName_contains: String
+  korName_not_contains: String
+  korName_starts_with: String
+  korName_not_starts_with: String
+  korName_ends_with: String
+  korName_not_ends_with: String
+  AND: [StockWhereInput!]
+  OR: [StockWhereInput!]
+  NOT: [StockWhereInput!]
+}
+
+input StockWhereUniqueInput {
+  id: ID
+  symbol: String
+  engName: String
+  korName: String
+}
+
 type Subscription {
+  stock(where: StockSubscriptionWhereInput): StockSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 

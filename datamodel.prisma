@@ -5,3 +5,10 @@ type User {
   username: String @unique
   name: String
 }
+
+type Stock {
+  id: ID! @id
+  symbol: String! @unique
+  engName: String! @unique
+  korName: String! @unique
+}
