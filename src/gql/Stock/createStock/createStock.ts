@@ -1,6 +1,7 @@
 import { prisma } from "../../../../generated/prisma-client";
+import { IResolvers } from "graphql-tools";
 
-export default {
+const mutation: IResolvers = {
   Mutation: {
     createStock: async (_, { symbol, engName, korName }, ctx, info) => {
       return prisma.createStock({
@@ -11,3 +12,4 @@ export default {
     }
   }
 };
+export default mutation;

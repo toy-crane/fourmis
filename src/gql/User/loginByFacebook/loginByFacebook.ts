@@ -1,8 +1,9 @@
 import { authenticateFacebook } from "../../../passport/facebook";
 import { prisma } from "../../../../generated/prisma-client";
 import generateJWT from "../../../utils/auth/generateJWT";
+import { IResolvers } from "graphql-tools";
 
-export default {
+const mutation: IResolvers = {
   Mutation: {
     loginByFacebook: async (_, { accessToken }, { req, res }) => {
       req.body = {
@@ -31,3 +32,5 @@ export default {
     }
   }
 };
+
+export default mutation;

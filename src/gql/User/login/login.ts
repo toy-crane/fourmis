@@ -1,8 +1,9 @@
 import * as bcrypt from "bcryptjs";
 import { prisma } from "../../../../generated/prisma-client";
 import generateJWT from "../../../utils/auth/generateJWT";
+import { IResolvers } from "graphql-tools";
 
-export default {
+const mutation: IResolvers = {
   Mutation: {
     login: async (parent, { password, email }, ctx, info) => {
       const user = await prisma.user({
@@ -25,3 +26,5 @@ export default {
     }
   }
 };
+
+export default mutation;
