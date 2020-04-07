@@ -3,8 +3,8 @@ import { IResolvers } from "graphql-tools";
 
 const query: IResolvers = {
   Query: {
-    getStocks: async (_, {}, ctx, info) => {
-      return prisma.stocks();
+    getProducts: async (_, {}, ctx, info) => {
+      return prisma.products();
     }
   }
 };

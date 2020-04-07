@@ -1,4 +1,4 @@
-type Stock {
+type Product {
   id: ID!
   symbol: String!
   engName: String!
