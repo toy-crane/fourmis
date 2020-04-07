@@ -31,7 +31,16 @@ type BoardConnection {
 
 input BoardCreateInput {
   id: ID
-  product: ProductCreateOneInput!
+  product: ProductCreateOneWithoutBoardInput!
+}
+
+input BoardCreateOneWithoutProductInput {
+  create: BoardCreateWithoutProductInput
+  connect: BoardWhereUniqueInput
+}
+
+input BoardCreateWithoutProductInput {
+  id: ID
 }
 
 type BoardEdge {
@@ -67,7 +76,14 @@ input BoardSubscriptionWhereInput {
 }
 
 input BoardUpdateInput {
-  product: ProductUpdateOneRequiredInput
+  product: ProductUpdateOneRequiredWithoutBoardInput
+}
+
+input BoardUpdateOneWithoutProductInput {
+  create: BoardCreateWithoutProductInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: BoardWhereUniqueInput
 }
 
 input BoardWhereInput {
@@ -139,6 +155,7 @@ type Product {
   symbol: String!
   engName: String!
   korName: String!
+  board: Board
 }
 
 type ProductConnection {
@@ -152,11 +169,19 @@ input ProductCreateInput {
   symbol: String!
   engName: String!
   korName: String!
+  board: BoardCreateOneWithoutProductInput
 }
 
-input ProductCreateOneInput {
-  create: ProductCreateInput
+input ProductCreateOneWithoutBoardInput {
+  create: ProductCreateWithoutBoardInput
   connect: ProductWhereUniqueInput
+}
+
+input ProductCreateWithoutBoardInput {
+  id: ID
+  symbol: String!
+  engName: String!
+  korName: String!
 }
 
 type ProductEdge {
@@ -200,16 +225,11 @@ input ProductSubscriptionWhereInput {
   NOT: [ProductSubscriptionWhereInput!]
 }
 
-input ProductUpdateDataInput {
-  symbol: String
-  engName: String
-  korName: String
-}
-
 input ProductUpdateInput {
   symbol: String
   engName: String
   korName: String
+  board: BoardUpdateOneWithoutProductInput
 }
 
 input ProductUpdateManyMutationInput {
@@ -218,16 +238,22 @@ input ProductUpdateManyMutationInput {
   korName: String
 }
 
-input ProductUpdateOneRequiredInput {
-  create: ProductCreateInput
-  update: ProductUpdateDataInput
-  upsert: ProductUpsertNestedInput
+input ProductUpdateOneRequiredWithoutBoardInput {
+  create: ProductCreateWithoutBoardInput
+  update: ProductUpdateWithoutBoardDataInput
+  upsert: ProductUpsertWithoutBoardInput
   connect: ProductWhereUniqueInput
 }
 
-input ProductUpsertNestedInput {
-  update: ProductUpdateDataInput!
-  create: ProductCreateInput!
+input ProductUpdateWithoutBoardDataInput {
+  symbol: String
+  engName: String
+  korName: String
+}
+
+input ProductUpsertWithoutBoardInput {
+  update: ProductUpdateWithoutBoardDataInput!
+  create: ProductCreateWithoutBoardInput!
 }
 
 input ProductWhereInput {
@@ -287,6 +313,7 @@ input ProductWhereInput {
   korName_not_starts_with: String
   korName_ends_with: String
   korName_not_ends_with: String
+  board: BoardWhereInput
   AND: [ProductWhereInput!]
   OR: [ProductWhereInput!]
   NOT: [ProductWhereInput!]

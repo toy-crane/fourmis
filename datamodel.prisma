@@ -11,6 +11,7 @@ type Product {
   symbol: String! @unique
   engName: String! @unique
   korName: String! @unique
+  board: Board @relation(link: INLINE)
 }
 
 type Board {

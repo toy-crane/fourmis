@@ -3,4 +3,5 @@ type Product {
   symbol: String!
   engName: String!
   korName: String!
+  board: Board
 }
