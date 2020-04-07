@@ -16,7 +16,8 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export type Maybe<T> = T | undefined | null;
 
 export interface Exists {
-  stock: (where?: StockWhereInput) => Promise<boolean>;
+  board: (where?: BoardWhereInput) => Promise<boolean>;
+  product: (where?: ProductWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
 
@@ -39,25 +40,44 @@ export interface Prisma {
    * Queries
    */
 
-  stock: (where: StockWhereUniqueInput) => StockNullablePromise;
-  stocks: (args?: {
-    where?: StockWhereInput;
-    orderBy?: StockOrderByInput;
+  board: (where: BoardWhereUniqueInput) => BoardNullablePromise;
+  boards: (args?: {
+    where?: BoardWhereInput;
+    orderBy?: BoardOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => FragmentableArray<Stock>;
-  stocksConnection: (args?: {
-    where?: StockWhereInput;
-    orderBy?: StockOrderByInput;
+  }) => FragmentableArray<Board>;
+  boardsConnection: (args?: {
+    where?: BoardWhereInput;
+    orderBy?: BoardOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => StockConnectionPromise;
+  }) => BoardConnectionPromise;
+  product: (where: ProductWhereUniqueInput) => ProductNullablePromise;
+  products: (args?: {
+    where?: ProductWhereInput;
+    orderBy?: ProductOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Product>;
+  productsConnection: (args?: {
+    where?: ProductWhereInput;
+    orderBy?: ProductOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => ProductConnectionPromise;
   user: (where: UserWhereUniqueInput) => UserNullablePromise;
   users: (args?: {
     where?: UserWhereInput;
@@ -83,22 +103,34 @@ export interface Prisma {
    * Mutations
    */
 
-  createStock: (data: StockCreateInput) => StockPromise;
-  updateStock: (args: {
-    data: StockUpdateInput;
-    where: StockWhereUniqueInput;
-  }) => StockPromise;
-  updateManyStocks: (args: {
-    data: StockUpdateManyMutationInput;
-    where?: StockWhereInput;
+  createBoard: (data: BoardCreateInput) => BoardPromise;
+  updateBoard: (args: {
+    data: BoardUpdateInput;
+    where: BoardWhereUniqueInput;
+  }) => BoardPromise;
+  upsertBoard: (args: {
+    where: BoardWhereUniqueInput;
+    create: BoardCreateInput;
+    update: BoardUpdateInput;
+  }) => BoardPromise;
+  deleteBoard: (where: BoardWhereUniqueInput) => BoardPromise;
+  deleteManyBoards: (where?: BoardWhereInput) => BatchPayloadPromise;
+  createProduct: (data: ProductCreateInput) => ProductPromise;
+  updateProduct: (args: {
+    data: ProductUpdateInput;
+    where: ProductWhereUniqueInput;
+  }) => ProductPromise;
+  updateManyProducts: (args: {
+    data: ProductUpdateManyMutationInput;
+    where?: ProductWhereInput;
   }) => BatchPayloadPromise;
-  upsertStock: (args: {
-    where: StockWhereUniqueInput;
-    create: StockCreateInput;
-    update: StockUpdateInput;
-  }) => StockPromise;
-  deleteStock: (where: StockWhereUniqueInput) => StockPromise;
-  deleteManyStocks: (where?: StockWhereInput) => BatchPayloadPromise;
+  upsertProduct: (args: {
+    where: ProductWhereUniqueInput;
+    create: ProductCreateInput;
+    update: ProductUpdateInput;
+  }) => ProductPromise;
+  deleteProduct: (where: ProductWhereUniqueInput) => ProductPromise;
+  deleteManyProducts: (where?: ProductWhereInput) => BatchPayloadPromise;
   createUser: (data: UserCreateInput) => UserPromise;
   updateUser: (args: {
     data: UserUpdateInput;
@@ -124,9 +156,12 @@ export interface Prisma {
 }
 
 export interface Subscription {
-  stock: (
-    where?: StockSubscriptionWhereInput
-  ) => StockSubscriptionPayloadSubscription;
+  board: (
+    where?: BoardSubscriptionWhereInput
+  ) => BoardSubscriptionPayloadSubscription;
+  product: (
+    where?: ProductSubscriptionWhereInput
+  ) => ProductSubscriptionPayloadSubscription;
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
@@ -140,7 +175,9 @@ export interface ClientConstructor<T> {
  * Types
  */
 
-export type StockOrderByInput =
+export type BoardOrderByInput = "id_ASC" | "id_DESC";
+
+export type ProductOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "symbol_ASC"
@@ -149,6 +186,8 @@ export type StockOrderByInput =
   | "engName_DESC"
   | "korName_ASC"
   | "korName_DESC";
+
+export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
 export type UserOrderByInput =
   | "id_ASC"
@@ -162,41 +201,24 @@ export type UserOrderByInput =
   | "name_ASC"
   | "name_DESC";
 
-export type MutationType = "CREATED" | "UPDATED" | "DELETED";
-
-export interface UserCreateInput {
-  id?: Maybe<ID_Input>;
-  email: String;
-  password?: Maybe<String>;
-  username?: Maybe<String>;
-  name?: Maybe<String>;
-}
-
-export type StockWhereUniqueInput = AtLeastOne<{
+export type ProductWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
   symbol?: Maybe<String>;
   engName?: Maybe<String>;
   korName?: Maybe<String>;
 }>;
 
-export interface StockUpdateInput {
+export type BoardWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface ProductUpdateDataInput {
   symbol?: Maybe<String>;
   engName?: Maybe<String>;
   korName?: Maybe<String>;
 }
 
-export interface StockSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<StockWhereInput>;
-  AND?: Maybe<StockSubscriptionWhereInput[] | StockSubscriptionWhereInput>;
-  OR?: Maybe<StockSubscriptionWhereInput[] | StockSubscriptionWhereInput>;
-  NOT?: Maybe<StockSubscriptionWhereInput[] | StockSubscriptionWhereInput>;
-}
-
-export interface StockWhereInput {
+export interface ProductWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -253,9 +275,47 @@ export interface StockWhereInput {
   korName_not_starts_with?: Maybe<String>;
   korName_ends_with?: Maybe<String>;
   korName_not_ends_with?: Maybe<String>;
-  AND?: Maybe<StockWhereInput[] | StockWhereInput>;
-  OR?: Maybe<StockWhereInput[] | StockWhereInput>;
-  NOT?: Maybe<StockWhereInput[] | StockWhereInput>;
+  AND?: Maybe<ProductWhereInput[] | ProductWhereInput>;
+  OR?: Maybe<ProductWhereInput[] | ProductWhereInput>;
+  NOT?: Maybe<ProductWhereInput[] | ProductWhereInput>;
+}
+
+export interface ProductUpdateOneRequiredInput {
+  create?: Maybe<ProductCreateInput>;
+  update?: Maybe<ProductUpdateDataInput>;
+  upsert?: Maybe<ProductUpsertNestedInput>;
+  connect?: Maybe<ProductWhereUniqueInput>;
+}
+
+export interface UserUpdateManyMutationInput {
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  username?: Maybe<String>;
+  name?: Maybe<String>;
+}
+
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  email?: Maybe<String>;
+  username?: Maybe<String>;
+}>;
+
+export interface UserCreateInput {
+  id?: Maybe<ID_Input>;
+  email: String;
+  password?: Maybe<String>;
+  username?: Maybe<String>;
+  name?: Maybe<String>;
+}
+
+export interface BoardUpdateInput {
+  product?: Maybe<ProductUpdateOneRequiredInput>;
+}
+
+export interface ProductUpdateInput {
+  symbol?: Maybe<String>;
+  engName?: Maybe<String>;
+  korName?: Maybe<String>;
 }
 
 export interface UserWhereInput {
@@ -334,30 +394,58 @@ export interface UserWhereInput {
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
-export interface StockCreateInput {
+export interface BoardWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  product?: Maybe<ProductWhereInput>;
+  AND?: Maybe<BoardWhereInput[] | BoardWhereInput>;
+  OR?: Maybe<BoardWhereInput[] | BoardWhereInput>;
+  NOT?: Maybe<BoardWhereInput[] | BoardWhereInput>;
+}
+
+export interface BoardCreateInput {
+  id?: Maybe<ID_Input>;
+  product: ProductCreateOneInput;
+}
+
+export interface ProductCreateOneInput {
+  create?: Maybe<ProductCreateInput>;
+  connect?: Maybe<ProductWhereUniqueInput>;
+}
+
+export interface ProductCreateInput {
   id?: Maybe<ID_Input>;
   symbol: String;
   engName: String;
   korName: String;
 }
 
-export type UserWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  email?: Maybe<String>;
-  username?: Maybe<String>;
-}>;
-
-export interface UserUpdateManyMutationInput {
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  username?: Maybe<String>;
-  name?: Maybe<String>;
+export interface ProductSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<ProductWhereInput>;
+  AND?: Maybe<ProductSubscriptionWhereInput[] | ProductSubscriptionWhereInput>;
+  OR?: Maybe<ProductSubscriptionWhereInput[] | ProductSubscriptionWhereInput>;
+  NOT?: Maybe<ProductSubscriptionWhereInput[] | ProductSubscriptionWhereInput>;
 }
 
-export interface StockUpdateManyMutationInput {
-  symbol?: Maybe<String>;
-  engName?: Maybe<String>;
-  korName?: Maybe<String>;
+export interface ProductUpsertNestedInput {
+  update: ProductUpdateDataInput;
+  create: ProductCreateInput;
 }
 
 export interface UserSubscriptionWhereInput {
@@ -371,6 +459,12 @@ export interface UserSubscriptionWhereInput {
   NOT?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
 }
 
+export interface ProductUpdateManyMutationInput {
+  symbol?: Maybe<String>;
+  engName?: Maybe<String>;
+  korName?: Maybe<String>;
+}
+
 export interface UserUpdateInput {
   email?: Maybe<String>;
   password?: Maybe<String>;
@@ -378,25 +472,35 @@ export interface UserUpdateInput {
   name?: Maybe<String>;
 }
 
+export interface BoardSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<BoardWhereInput>;
+  AND?: Maybe<BoardSubscriptionWhereInput[] | BoardSubscriptionWhereInput>;
+  OR?: Maybe<BoardSubscriptionWhereInput[] | BoardSubscriptionWhereInput>;
+  NOT?: Maybe<BoardSubscriptionWhereInput[] | BoardSubscriptionWhereInput>;
+}
+
 export interface NodeNode {
   id: ID_Output;
 }
 
-export interface UserEdge {
-  node: User;
-  cursor: String;
+export interface AggregateUser {
+  count: Int;
 }
 
-export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
-  node: <T = UserPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface UserEdgeSubscription
-  extends Promise<AsyncIterator<UserEdge>>,
+export interface AggregateUserPromise
+  extends Promise<AggregateUser>,
     Fragmentable {
-  node: <T = UserSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
+  count: () => Promise<Int>;
+}
+
+export interface AggregateUserSubscription
+  extends Promise<AsyncIterator<AggregateUser>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface PageInfo {
@@ -450,25 +554,25 @@ export interface UserPreviousValuesSubscription
   name: () => Promise<AsyncIterator<String>>;
 }
 
-export interface StockConnection {
+export interface BoardConnection {
   pageInfo: PageInfo;
-  edges: StockEdge[];
+  edges: BoardEdge[];
 }
 
-export interface StockConnectionPromise
-  extends Promise<StockConnection>,
+export interface BoardConnectionPromise
+  extends Promise<BoardConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<StockEdge>>() => T;
-  aggregate: <T = AggregateStockPromise>() => T;
+  edges: <T = FragmentableArray<BoardEdge>>() => T;
+  aggregate: <T = AggregateBoardPromise>() => T;
 }
 
-export interface StockConnectionSubscription
-  extends Promise<AsyncIterator<StockConnection>>,
+export interface BoardConnectionSubscription
+  extends Promise<AsyncIterator<BoardConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<StockEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateStockSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<BoardEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateBoardSubscription>() => T;
 }
 
 export interface UserConnection {
@@ -492,78 +596,46 @@ export interface UserConnectionSubscription
   aggregate: <T = AggregateUserSubscription>() => T;
 }
 
-export interface StockSubscriptionPayload {
-  mutation: MutationType;
-  node: Stock;
-  updatedFields: String[];
-  previousValues: StockPreviousValues;
-}
-
-export interface StockSubscriptionPayloadPromise
-  extends Promise<StockSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = StockPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = StockPreviousValuesPromise>() => T;
-}
-
-export interface StockSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<StockSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = StockSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = StockPreviousValuesSubscription>() => T;
-}
-
-export interface Stock {
-  id: ID_Output;
-  symbol: String;
-  engName: String;
-  korName: String;
-}
-
-export interface StockPromise extends Promise<Stock>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  symbol: () => Promise<String>;
-  engName: () => Promise<String>;
-  korName: () => Promise<String>;
-}
-
-export interface StockSubscription
-  extends Promise<AsyncIterator<Stock>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  symbol: () => Promise<AsyncIterator<String>>;
-  engName: () => Promise<AsyncIterator<String>>;
-  korName: () => Promise<AsyncIterator<String>>;
-}
-
-export interface StockNullablePromise
-  extends Promise<Stock | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  symbol: () => Promise<String>;
-  engName: () => Promise<String>;
-  korName: () => Promise<String>;
-}
-
-export interface StockEdge {
-  node: Stock;
+export interface UserEdge {
+  node: User;
   cursor: String;
 }
 
-export interface StockEdgePromise extends Promise<StockEdge>, Fragmentable {
-  node: <T = StockPromise>() => T;
+export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
+  node: <T = UserPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface StockEdgeSubscription
-  extends Promise<AsyncIterator<StockEdge>>,
+export interface UserEdgeSubscription
+  extends Promise<AsyncIterator<UserEdge>>,
     Fragmentable {
-  node: <T = StockSubscription>() => T;
+  node: <T = UserSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface ProductSubscriptionPayload {
+  mutation: MutationType;
+  node: Product;
+  updatedFields: String[];
+  previousValues: ProductPreviousValues;
+}
+
+export interface ProductSubscriptionPayloadPromise
+  extends Promise<ProductSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = ProductPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = ProductPreviousValuesPromise>() => T;
+}
+
+export interface ProductSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ProductSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = ProductSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = ProductPreviousValuesSubscription>() => T;
 }
 
 export interface User {
@@ -602,31 +674,96 @@ export interface UserNullablePromise
   name: () => Promise<String>;
 }
 
-export interface AggregateUser {
+export interface AggregateProduct {
   count: Int;
 }
 
-export interface AggregateUserPromise
-  extends Promise<AggregateUser>,
+export interface AggregateProductPromise
+  extends Promise<AggregateProduct>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateUserSubscription
-  extends Promise<AsyncIterator<AggregateUser>>,
+export interface AggregateProductSubscription
+  extends Promise<AsyncIterator<AggregateProduct>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface StockPreviousValues {
+export interface ProductEdge {
+  node: Product;
+  cursor: String;
+}
+
+export interface ProductEdgePromise extends Promise<ProductEdge>, Fragmentable {
+  node: <T = ProductPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface ProductEdgeSubscription
+  extends Promise<AsyncIterator<ProductEdge>>,
+    Fragmentable {
+  node: <T = ProductSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface BatchPayload {
+  count: Long;
+}
+
+export interface BatchPayloadPromise
+  extends Promise<BatchPayload>,
+    Fragmentable {
+  count: () => Promise<Long>;
+}
+
+export interface BatchPayloadSubscription
+  extends Promise<AsyncIterator<BatchPayload>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Long>>;
+}
+
+export interface AggregateBoard {
+  count: Int;
+}
+
+export interface AggregateBoardPromise
+  extends Promise<AggregateBoard>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateBoardSubscription
+  extends Promise<AsyncIterator<AggregateBoard>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface Product {
   id: ID_Output;
   symbol: String;
   engName: String;
   korName: String;
 }
 
-export interface StockPreviousValuesPromise
-  extends Promise<StockPreviousValues>,
+export interface ProductPromise extends Promise<Product>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  symbol: () => Promise<String>;
+  engName: () => Promise<String>;
+  korName: () => Promise<String>;
+}
+
+export interface ProductSubscription
+  extends Promise<AsyncIterator<Product>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  symbol: () => Promise<AsyncIterator<String>>;
+  engName: () => Promise<AsyncIterator<String>>;
+  korName: () => Promise<AsyncIterator<String>>;
+}
+
+export interface ProductNullablePromise
+  extends Promise<Product | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
   symbol: () => Promise<String>;
@@ -634,13 +771,87 @@ export interface StockPreviousValuesPromise
   korName: () => Promise<String>;
 }
 
-export interface StockPreviousValuesSubscription
-  extends Promise<AsyncIterator<StockPreviousValues>>,
+export interface BoardPreviousValues {
+  id: ID_Output;
+}
+
+export interface BoardPreviousValuesPromise
+  extends Promise<BoardPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+}
+
+export interface BoardPreviousValuesSubscription
+  extends Promise<AsyncIterator<BoardPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+}
+
+export interface BoardSubscriptionPayload {
+  mutation: MutationType;
+  node: Board;
+  updatedFields: String[];
+  previousValues: BoardPreviousValues;
+}
+
+export interface BoardSubscriptionPayloadPromise
+  extends Promise<BoardSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = BoardPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = BoardPreviousValuesPromise>() => T;
+}
+
+export interface BoardSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<BoardSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = BoardSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = BoardPreviousValuesSubscription>() => T;
+}
+
+export interface ProductPreviousValues {
+  id: ID_Output;
+  symbol: String;
+  engName: String;
+  korName: String;
+}
+
+export interface ProductPreviousValuesPromise
+  extends Promise<ProductPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  symbol: () => Promise<String>;
+  engName: () => Promise<String>;
+  korName: () => Promise<String>;
+}
+
+export interface ProductPreviousValuesSubscription
+  extends Promise<AsyncIterator<ProductPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   symbol: () => Promise<AsyncIterator<String>>;
   engName: () => Promise<AsyncIterator<String>>;
   korName: () => Promise<AsyncIterator<String>>;
+}
+
+export interface BoardEdge {
+  node: Board;
+  cursor: String;
+}
+
+export interface BoardEdgePromise extends Promise<BoardEdge>, Fragmentable {
+  node: <T = BoardPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface BoardEdgeSubscription
+  extends Promise<AsyncIterator<BoardEdge>>,
+    Fragmentable {
+  node: <T = BoardSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface UserSubscriptionPayload {
@@ -668,36 +879,48 @@ export interface UserSubscriptionPayloadSubscription
   previousValues: <T = UserPreviousValuesSubscription>() => T;
 }
 
-export interface BatchPayload {
-  count: Long;
+export interface ProductConnection {
+  pageInfo: PageInfo;
+  edges: ProductEdge[];
 }
 
-export interface BatchPayloadPromise
-  extends Promise<BatchPayload>,
+export interface ProductConnectionPromise
+  extends Promise<ProductConnection>,
     Fragmentable {
-  count: () => Promise<Long>;
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<ProductEdge>>() => T;
+  aggregate: <T = AggregateProductPromise>() => T;
 }
 
-export interface BatchPayloadSubscription
-  extends Promise<AsyncIterator<BatchPayload>>,
+export interface ProductConnectionSubscription
+  extends Promise<AsyncIterator<ProductConnection>>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Long>>;
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ProductEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateProductSubscription>() => T;
 }
 
-export interface AggregateStock {
-  count: Int;
+export interface Board {
+  id: ID_Output;
 }
 
-export interface AggregateStockPromise
-  extends Promise<AggregateStock>,
+export interface BoardPromise extends Promise<Board>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  product: <T = ProductPromise>() => T;
+}
+
+export interface BoardSubscription
+  extends Promise<AsyncIterator<Board>>,
     Fragmentable {
-  count: () => Promise<Int>;
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  product: <T = ProductSubscription>() => T;
 }
 
-export interface AggregateStockSubscription
-  extends Promise<AsyncIterator<AggregateStock>>,
+export interface BoardNullablePromise
+  extends Promise<Board | null>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  id: () => Promise<ID_Output>;
+  product: <T = ProductPromise>() => T;
 }
 
 /*
@@ -714,14 +937,14 @@ export type ID_Output = string;
 export type Long = string;
 
 /*
-The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
-*/
-export type String = string;
-
-/*
 The `Boolean` scalar type represents `true` or `false`.
 */
 export type Boolean = boolean;
+
+/*
+The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
+*/
+export type String = string;
 
 /**
  * Model Metadata
@@ -733,7 +956,11 @@ export const models: Model[] = [
     embedded: false
   },
   {
-    name: "Stock",
+    name: "Product",
+    embedded: false
+  },
+  {
+    name: "Board",
     embedded: false
   }
 ];

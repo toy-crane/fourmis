@@ -2,7 +2,11 @@
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-export const typeDefs = /* GraphQL */ `type AggregateStock {
+export const typeDefs = /* GraphQL */ `type AggregateBoard {
+  count: Int!
+}
+
+type AggregateProduct {
   count: Int!
 }
 
@@ -14,15 +18,97 @@ type BatchPayload {
   count: Long!
 }
 
+type Board {
+  id: ID!
+  product: Product!
+}
+
+type BoardConnection {
+  pageInfo: PageInfo!
+  edges: [BoardEdge]!
+  aggregate: AggregateBoard!
+}
+
+input BoardCreateInput {
+  id: ID
+  product: ProductCreateOneInput!
+}
+
+type BoardEdge {
+  node: Board!
+  cursor: String!
+}
+
+enum BoardOrderByInput {
+  id_ASC
+  id_DESC
+}
+
+type BoardPreviousValues {
+  id: ID!
+}
+
+type BoardSubscriptionPayload {
+  mutation: MutationType!
+  node: Board
+  updatedFields: [String!]
+  previousValues: BoardPreviousValues
+}
+
+input BoardSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: BoardWhereInput
+  AND: [BoardSubscriptionWhereInput!]
+  OR: [BoardSubscriptionWhereInput!]
+  NOT: [BoardSubscriptionWhereInput!]
+}
+
+input BoardUpdateInput {
+  product: ProductUpdateOneRequiredInput
+}
+
+input BoardWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  product: ProductWhereInput
+  AND: [BoardWhereInput!]
+  OR: [BoardWhereInput!]
+  NOT: [BoardWhereInput!]
+}
+
+input BoardWhereUniqueInput {
+  id: ID
+}
+
 scalar Long
 
 type Mutation {
-  createStock(data: StockCreateInput!): Stock!
-  updateStock(data: StockUpdateInput!, where: StockWhereUniqueInput!): Stock
-  updateManyStocks(data: StockUpdateManyMutationInput!, where: StockWhereInput): BatchPayload!
-  upsertStock(where: StockWhereUniqueInput!, create: StockCreateInput!, update: StockUpdateInput!): Stock!
-  deleteStock(where: StockWhereUniqueInput!): Stock
-  deleteManyStocks(where: StockWhereInput): BatchPayload!
+  createBoard(data: BoardCreateInput!): Board!
+  updateBoard(data: BoardUpdateInput!, where: BoardWhereUniqueInput!): Board
+  upsertBoard(where: BoardWhereUniqueInput!, create: BoardCreateInput!, update: BoardUpdateInput!): Board!
+  deleteBoard(where: BoardWhereUniqueInput!): Board
+  deleteManyBoards(where: BoardWhereInput): BatchPayload!
+  createProduct(data: ProductCreateInput!): Product!
+  updateProduct(data: ProductUpdateInput!, where: ProductWhereUniqueInput!): Product
+  updateManyProducts(data: ProductUpdateManyMutationInput!, where: ProductWhereInput): BatchPayload!
+  upsertProduct(where: ProductWhereUniqueInput!, create: ProductCreateInput!, update: ProductUpdateInput!): Product!
+  deleteProduct(where: ProductWhereUniqueInput!): Product
+  deleteManyProducts(where: ProductWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -48,42 +134,37 @@ type PageInfo {
   endCursor: String
 }
 
-type Query {
-  stock(where: StockWhereUniqueInput!): Stock
-  stocks(where: StockWhereInput, orderBy: StockOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Stock]!
-  stocksConnection(where: StockWhereInput, orderBy: StockOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): StockConnection!
-  user(where: UserWhereUniqueInput!): User
-  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
-  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
-  node(id: ID!): Node
-}
-
-type Stock {
+type Product {
   id: ID!
   symbol: String!
   engName: String!
   korName: String!
 }
 
-type StockConnection {
+type ProductConnection {
   pageInfo: PageInfo!
-  edges: [StockEdge]!
-  aggregate: AggregateStock!
+  edges: [ProductEdge]!
+  aggregate: AggregateProduct!
 }
 
-input StockCreateInput {
+input ProductCreateInput {
   id: ID
   symbol: String!
   engName: String!
   korName: String!
 }
 
-type StockEdge {
-  node: Stock!
+input ProductCreateOneInput {
+  create: ProductCreateInput
+  connect: ProductWhereUniqueInput
+}
+
+type ProductEdge {
+  node: Product!
   cursor: String!
 }
 
-enum StockOrderByInput {
+enum ProductOrderByInput {
   id_ASC
   id_DESC
   symbol_ASC
@@ -94,44 +175,62 @@ enum StockOrderByInput {
   korName_DESC
 }
 
-type StockPreviousValues {
+type ProductPreviousValues {
   id: ID!
   symbol: String!
   engName: String!
   korName: String!
 }
 
-type StockSubscriptionPayload {
+type ProductSubscriptionPayload {
   mutation: MutationType!
-  node: Stock
+  node: Product
   updatedFields: [String!]
-  previousValues: StockPreviousValues
+  previousValues: ProductPreviousValues
 }
 
-input StockSubscriptionWhereInput {
+input ProductSubscriptionWhereInput {
   mutation_in: [MutationType!]
   updatedFields_contains: String
   updatedFields_contains_every: [String!]
   updatedFields_contains_some: [String!]
-  node: StockWhereInput
-  AND: [StockSubscriptionWhereInput!]
-  OR: [StockSubscriptionWhereInput!]
-  NOT: [StockSubscriptionWhereInput!]
+  node: ProductWhereInput
+  AND: [ProductSubscriptionWhereInput!]
+  OR: [ProductSubscriptionWhereInput!]
+  NOT: [ProductSubscriptionWhereInput!]
 }
 
-input StockUpdateInput {
+input ProductUpdateDataInput {
   symbol: String
   engName: String
   korName: String
 }
 
-input StockUpdateManyMutationInput {
+input ProductUpdateInput {
   symbol: String
   engName: String
   korName: String
 }
 
-input StockWhereInput {
+input ProductUpdateManyMutationInput {
+  symbol: String
+  engName: String
+  korName: String
+}
+
+input ProductUpdateOneRequiredInput {
+  create: ProductCreateInput
+  update: ProductUpdateDataInput
+  upsert: ProductUpsertNestedInput
+  connect: ProductWhereUniqueInput
+}
+
+input ProductUpsertNestedInput {
+  update: ProductUpdateDataInput!
+  create: ProductCreateInput!
+}
+
+input ProductWhereInput {
   id: ID
   id_not: ID
   id_in: [ID!]
@@ -188,20 +287,34 @@ input StockWhereInput {
   korName_not_starts_with: String
   korName_ends_with: String
   korName_not_ends_with: String
-  AND: [StockWhereInput!]
-  OR: [StockWhereInput!]
-  NOT: [StockWhereInput!]
+  AND: [ProductWhereInput!]
+  OR: [ProductWhereInput!]
+  NOT: [ProductWhereInput!]
 }
 
-input StockWhereUniqueInput {
+input ProductWhereUniqueInput {
   id: ID
   symbol: String
   engName: String
   korName: String
 }
 
+type Query {
+  board(where: BoardWhereUniqueInput!): Board
+  boards(where: BoardWhereInput, orderBy: BoardOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Board]!
+  boardsConnection(where: BoardWhereInput, orderBy: BoardOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BoardConnection!
+  product(where: ProductWhereUniqueInput!): Product
+  products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product]!
+  productsConnection(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductConnection!
+  user(where: UserWhereUniqueInput!): User
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  node(id: ID!): Node
+}
+
 type Subscription {
-  stock(where: StockSubscriptionWhereInput): StockSubscriptionPayload
+  board(where: BoardSubscriptionWhereInput): BoardSubscriptionPayload
+  product(where: ProductSubscriptionWhereInput): ProductSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 

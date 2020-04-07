@@ -1,0 +1,4 @@
+type Board {
+  id: ID!
+  product: Product!
+}

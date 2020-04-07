@@ -6,9 +6,14 @@ type User {
   name: String
 }
 
-type Stock {
+type Product {
   id: ID! @id
   symbol: String! @unique
   engName: String! @unique
   korName: String! @unique
+}
+
+type Board {
+  id: ID! @id
+  product: Product!
 }
