@@ -1420,6 +1420,11 @@ graphql-playground-middleware-lambda@1.7.12:
   dependencies:
     graphql-playground-html "1.6.12"
 
+graphql-scalars@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/graphql-scalars/-/graphql-scalars-1.1.0.tgz#e3d1583acbd7a13d7360056b3f5395297249f860"
+  integrity sha512-ETOEZr6W3cc2vLbI+ducBr+CPso1lrngCkejD2O/gk56uk40u2ZQ4EMTo50j7twDqMtP3pjv9IlXHix6dqFT9A==
+
 graphql-shield@^7.2.2:
   version "7.2.2"
   resolved "https://registry.yarnpkg.com/graphql-shield/-/graphql-shield-7.2.2.tgz#daf9a91c6b8487b5f00dea12c8ab3bb85947471a"

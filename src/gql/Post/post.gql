@@ -3,4 +3,6 @@ type Post {
   board: Board!
   title: String!
   content: String!
+  createdAt: DateTime
+  updatedAt: DateTime
 }
