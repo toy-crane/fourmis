@@ -17,4 +17,14 @@ type Product {
 type Board {
   id: ID! @id
   product: Product!
+  posts: [Post!]
+}
+
+type Post {
+  id: ID! @id
+  board: Board
+  title: String!
+  content: String!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
 }

@@ -6,6 +6,10 @@ export const typeDefs = /* GraphQL */ `type AggregateBoard {
   count: Int!
 }
 
+type AggregatePost {
+  count: Int!
+}
+
 type AggregateProduct {
   count: Int!
 }
@@ -21,6 +25,7 @@ type BatchPayload {
 type Board {
   id: ID!
   product: Product!
+  posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
 }
 
 type BoardConnection {
@@ -32,6 +37,12 @@ type BoardConnection {
 input BoardCreateInput {
   id: ID
   product: ProductCreateOneWithoutBoardInput!
+  posts: PostCreateManyWithoutBoardInput
+}
+
+input BoardCreateOneWithoutPostsInput {
+  create: BoardCreateWithoutPostsInput
+  connect: BoardWhereUniqueInput
 }
 
 input BoardCreateOneWithoutProductInput {
@@ -39,8 +50,14 @@ input BoardCreateOneWithoutProductInput {
   connect: BoardWhereUniqueInput
 }
 
+input BoardCreateWithoutPostsInput {
+  id: ID
+  product: ProductCreateOneWithoutBoardInput!
+}
+
 input BoardCreateWithoutProductInput {
   id: ID
+  posts: PostCreateManyWithoutBoardInput
 }
 
 type BoardEdge {
@@ -77,13 +94,43 @@ input BoardSubscriptionWhereInput {
 
 input BoardUpdateInput {
   product: ProductUpdateOneRequiredWithoutBoardInput
+  posts: PostUpdateManyWithoutBoardInput
+}
+
+input BoardUpdateOneWithoutPostsInput {
+  create: BoardCreateWithoutPostsInput
+  update: BoardUpdateWithoutPostsDataInput
+  upsert: BoardUpsertWithoutPostsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: BoardWhereUniqueInput
 }
 
 input BoardUpdateOneWithoutProductInput {
   create: BoardCreateWithoutProductInput
+  update: BoardUpdateWithoutProductDataInput
+  upsert: BoardUpsertWithoutProductInput
   delete: Boolean
   disconnect: Boolean
   connect: BoardWhereUniqueInput
+}
+
+input BoardUpdateWithoutPostsDataInput {
+  product: ProductUpdateOneRequiredWithoutBoardInput
+}
+
+input BoardUpdateWithoutProductDataInput {
+  posts: PostUpdateManyWithoutBoardInput
+}
+
+input BoardUpsertWithoutPostsInput {
+  update: BoardUpdateWithoutPostsDataInput!
+  create: BoardCreateWithoutPostsInput!
+}
+
+input BoardUpsertWithoutProductInput {
+  update: BoardUpdateWithoutProductDataInput!
+  create: BoardCreateWithoutProductInput!
 }
 
 input BoardWhereInput {
@@ -102,6 +149,9 @@ input BoardWhereInput {
   id_ends_with: ID
   id_not_ends_with: ID
   product: ProductWhereInput
+  posts_every: PostWhereInput
+  posts_some: PostWhereInput
+  posts_none: PostWhereInput
   AND: [BoardWhereInput!]
   OR: [BoardWhereInput!]
   NOT: [BoardWhereInput!]
@@ -111,6 +161,8 @@ input BoardWhereUniqueInput {
   id: ID
 }
 
+scalar DateTime
+
 scalar Long
 
 type Mutation {
@@ -119,6 +171,12 @@ type Mutation {
   upsertBoard(where: BoardWhereUniqueInput!, create: BoardCreateInput!, update: BoardUpdateInput!): Board!
   deleteBoard(where: BoardWhereUniqueInput!): Board
   deleteManyBoards(where: BoardWhereInput): BatchPayload!
+  createPost(data: PostCreateInput!): Post!
+  updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
+  updateManyPosts(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
+  upsertPost(where: PostWhereUniqueInput!, create: PostCreateInput!, update: PostUpdateInput!): Post!
+  deletePost(where: PostWhereUniqueInput!): Post
+  deleteManyPosts(where: PostWhereInput): BatchPayload!
   createProduct(data: ProductCreateInput!): Product!
   updateProduct(data: ProductUpdateInput!, where: ProductWhereUniqueInput!): Product
   updateManyProducts(data: ProductUpdateManyMutationInput!, where: ProductWhereInput): BatchPayload!
@@ -148,6 +206,265 @@ type PageInfo {
   hasPreviousPage: Boolean!
   startCursor: String
   endCursor: String
+}
+
+type Post {
+  id: ID!
+  board: Board
+  title: String!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type PostConnection {
+  pageInfo: PageInfo!
+  edges: [PostEdge]!
+  aggregate: AggregatePost!
+}
+
+input PostCreateInput {
+  id: ID
+  board: BoardCreateOneWithoutPostsInput
+  title: String!
+  content: String!
+}
+
+input PostCreateManyWithoutBoardInput {
+  create: [PostCreateWithoutBoardInput!]
+  connect: [PostWhereUniqueInput!]
+}
+
+input PostCreateWithoutBoardInput {
+  id: ID
+  title: String!
+  content: String!
+}
+
+type PostEdge {
+  node: Post!
+  cursor: String!
+}
+
+enum PostOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  content_ASC
+  content_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type PostPreviousValues {
+  id: ID!
+  title: String!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input PostScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  content: String
+  content_not: String
+  content_in: [String!]
+  content_not_in: [String!]
+  content_lt: String
+  content_lte: String
+  content_gt: String
+  content_gte: String
+  content_contains: String
+  content_not_contains: String
+  content_starts_with: String
+  content_not_starts_with: String
+  content_ends_with: String
+  content_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [PostScalarWhereInput!]
+  OR: [PostScalarWhereInput!]
+  NOT: [PostScalarWhereInput!]
+}
+
+type PostSubscriptionPayload {
+  mutation: MutationType!
+  node: Post
+  updatedFields: [String!]
+  previousValues: PostPreviousValues
+}
+
+input PostSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: PostWhereInput
+  AND: [PostSubscriptionWhereInput!]
+  OR: [PostSubscriptionWhereInput!]
+  NOT: [PostSubscriptionWhereInput!]
+}
+
+input PostUpdateInput {
+  board: BoardUpdateOneWithoutPostsInput
+  title: String
+  content: String
+}
+
+input PostUpdateManyDataInput {
+  title: String
+  content: String
+}
+
+input PostUpdateManyMutationInput {
+  title: String
+  content: String
+}
+
+input PostUpdateManyWithoutBoardInput {
+  create: [PostCreateWithoutBoardInput!]
+  delete: [PostWhereUniqueInput!]
+  connect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  disconnect: [PostWhereUniqueInput!]
+  update: [PostUpdateWithWhereUniqueWithoutBoardInput!]
+  upsert: [PostUpsertWithWhereUniqueWithoutBoardInput!]
+  deleteMany: [PostScalarWhereInput!]
+  updateMany: [PostUpdateManyWithWhereNestedInput!]
+}
+
+input PostUpdateManyWithWhereNestedInput {
+  where: PostScalarWhereInput!
+  data: PostUpdateManyDataInput!
+}
+
+input PostUpdateWithoutBoardDataInput {
+  title: String
+  content: String
+}
+
+input PostUpdateWithWhereUniqueWithoutBoardInput {
+  where: PostWhereUniqueInput!
+  data: PostUpdateWithoutBoardDataInput!
+}
+
+input PostUpsertWithWhereUniqueWithoutBoardInput {
+  where: PostWhereUniqueInput!
+  update: PostUpdateWithoutBoardDataInput!
+  create: PostCreateWithoutBoardInput!
+}
+
+input PostWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  board: BoardWhereInput
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  content: String
+  content_not: String
+  content_in: [String!]
+  content_not_in: [String!]
+  content_lt: String
+  content_lte: String
+  content_gt: String
+  content_gte: String
+  content_contains: String
+  content_not_contains: String
+  content_starts_with: String
+  content_not_starts_with: String
+  content_ends_with: String
+  content_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+}
+
+input PostWhereUniqueInput {
+  id: ID
 }
 
 type Product {
@@ -330,6 +647,9 @@ type Query {
   board(where: BoardWhereUniqueInput!): Board
   boards(where: BoardWhereInput, orderBy: BoardOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Board]!
   boardsConnection(where: BoardWhereInput, orderBy: BoardOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BoardConnection!
+  post(where: PostWhereUniqueInput!): Post
+  posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
+  postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
   product(where: ProductWhereUniqueInput!): Product
   products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product]!
   productsConnection(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductConnection!
@@ -341,6 +661,7 @@ type Query {
 
 type Subscription {
   board(where: BoardSubscriptionWhereInput): BoardSubscriptionPayload
+  post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
   product(where: ProductSubscriptionWhereInput): ProductSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
