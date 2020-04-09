@@ -1,0 +1,12 @@
+import { prisma } from "../../../../generated/prisma-client";
+import { IResolvers } from "graphql-tools";
+import { BOARD_FRAGMENT } from "../../../fragment";
+
+const query: IResolvers = {
+  Query: {
+    getBoard: async (_, { boardId: id }, ctx, info) => {
+      return prisma.board({ id }).$fragment(BOARD_FRAGMENT);
+    }
+  }
+};
+export default query;

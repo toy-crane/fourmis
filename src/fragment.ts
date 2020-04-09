@@ -4,6 +4,11 @@ export const PRODUCT_FRAGMENT = `
     engName
     korName
 `;
+export const POST_FRAGMENT = `
+    id
+    content
+    title
+`;
 
 export const BOARD_FRAGMENT = `
     fragment ProductParts on Comment

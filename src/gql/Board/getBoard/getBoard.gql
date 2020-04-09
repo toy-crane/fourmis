@@ -1,0 +1,3 @@
+type Query {
+  getBoard(boardId: String): Board
+}
