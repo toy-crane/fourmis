@@ -4,6 +4,8 @@ type User {
   password: String
   username: String @unique
   name: String
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
 }
 
 type Product {
@@ -12,12 +14,16 @@ type Product {
   engName: String! @unique
   korName: String! @unique
   board: Board @relation(link: INLINE)
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
 }
 
 type Board {
   id: ID! @id
   product: Product!
   posts: [Post!]
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
 }
 
 type Post {
