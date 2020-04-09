@@ -399,7 +399,7 @@ export interface BoardUpsertWithoutPostsInput {
 
 export interface PostCreateInput {
   id?: Maybe<ID_Input>;
-  board?: Maybe<BoardCreateOneWithoutPostsInput>;
+  board: BoardCreateOneWithoutPostsInput;
   title: String;
   content: String;
 }
@@ -712,12 +712,10 @@ export interface BoardUpsertWithoutProductInput {
   create: BoardCreateWithoutProductInput;
 }
 
-export interface BoardUpdateOneWithoutPostsInput {
+export interface BoardUpdateOneRequiredWithoutPostsInput {
   create?: Maybe<BoardCreateWithoutPostsInput>;
   update?: Maybe<BoardUpdateWithoutPostsDataInput>;
   upsert?: Maybe<BoardUpsertWithoutPostsInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
   connect?: Maybe<BoardWhereUniqueInput>;
 }
 
@@ -728,7 +726,7 @@ export type UserWhereUniqueInput = AtLeastOne<{
 }>;
 
 export interface PostUpdateInput {
-  board?: Maybe<BoardUpdateOneWithoutPostsInput>;
+  board?: Maybe<BoardUpdateOneRequiredWithoutPostsInput>;
   title?: Maybe<String>;
   content?: Maybe<String>;
 }

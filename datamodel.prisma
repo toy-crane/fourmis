@@ -28,7 +28,7 @@ type Board {
 
 type Post {
   id: ID! @id
-  board: Board
+  board: Board!
   title: String!
   content: String!
   createdAt: DateTime! @createdAt

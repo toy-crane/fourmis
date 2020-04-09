@@ -105,12 +105,10 @@ input BoardUpdateInput {
   posts: PostUpdateManyWithoutBoardInput
 }
 
-input BoardUpdateOneWithoutPostsInput {
+input BoardUpdateOneRequiredWithoutPostsInput {
   create: BoardCreateWithoutPostsInput
   update: BoardUpdateWithoutPostsDataInput
   upsert: BoardUpsertWithoutPostsInput
-  delete: Boolean
-  disconnect: Boolean
   connect: BoardWhereUniqueInput
 }
 
@@ -234,7 +232,7 @@ type PageInfo {
 
 type Post {
   id: ID!
-  board: Board
+  board: Board!
   title: String!
   content: String!
   createdAt: DateTime!
@@ -249,7 +247,7 @@ type PostConnection {
 
 input PostCreateInput {
   id: ID
-  board: BoardCreateOneWithoutPostsInput
+  board: BoardCreateOneWithoutPostsInput!
   title: String!
   content: String!
 }
@@ -374,7 +372,7 @@ input PostSubscriptionWhereInput {
 }
 
 input PostUpdateInput {
-  board: BoardUpdateOneWithoutPostsInput
+  board: BoardUpdateOneRequiredWithoutPostsInput
   title: String
   content: String
 }
