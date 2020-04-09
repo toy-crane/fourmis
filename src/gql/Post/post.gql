@@ -1,0 +1,6 @@
+type Post {
+  id: ID!
+  board: Board!
+  title: String!
+  content: String!
+}

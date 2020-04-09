@@ -1,0 +1,3 @@
+type Mutation {
+  createPost(boardId: String!, content: String!, title: String!): Post!
+}
