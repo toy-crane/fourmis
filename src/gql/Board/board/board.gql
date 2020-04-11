@@ -5,5 +5,5 @@ type Board {
 }
 
 type Query {
-  board(boardId: String): Board
+  board(id: String): Board
 }
