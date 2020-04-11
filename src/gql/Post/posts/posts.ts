@@ -1,12 +1,12 @@
-import { prisma } from "../../../../generated/prisma-client";
 import { IResolvers } from "graphql-tools";
+import { prisma } from "../../../../generated/prisma-client";
 
 const query: IResolvers = {
   Query: {
-    getPosts: async (_, { boardId, after, offset: first = 10 }, ctx, info) => {
+    posts: async (_, { boardId, cursor, offset = 10 }, ctx, info) => {
       return prisma.posts({
-        first,
-        after,
+        first: offset,
+        after: cursor,
         where: {
           board: {
             id: boardId

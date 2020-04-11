@@ -1,0 +1,3 @@
+type Query {
+  posts(boardId: String!, after: String, offset: Int): [Post!]
+}

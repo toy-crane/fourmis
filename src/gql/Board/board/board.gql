@@ -3,3 +3,7 @@ type Board {
   product: Product!
   posts: [Post!]
 }
+
+type Query {
+  board(boardId: String): Board
+}

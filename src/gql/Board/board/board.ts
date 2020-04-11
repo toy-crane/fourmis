@@ -4,8 +4,8 @@ import { BOARD_FRAGMENT } from "../../../fragment";
 
 const query: IResolvers = {
   Query: {
-    getBoards: async (_, {}, ctx, info) => {
-      return prisma.boards().$fragment(BOARD_FRAGMENT);
+    board: async (_, { boardId: id }, ctx, info) => {
+      return prisma.board({ id }).$fragment(BOARD_FRAGMENT);
     }
   }
 };
