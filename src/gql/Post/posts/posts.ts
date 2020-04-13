@@ -14,12 +14,13 @@ const query: IResolvers = {
   },
   PostsConnection: {
     edges: async parent => {
-      const { boardId, cursor } = parent;
+      const { boardId, cursor, offset } = parent;
       const posts = await prisma.posts({
         where: {
           board: { id: boardId },
           createdAt_lt: cursor
         },
+        first: offset,
         orderBy: "createdAt_DESC"
       });
       const postEdges = posts.map(post => ({
