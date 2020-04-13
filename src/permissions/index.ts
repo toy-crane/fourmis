@@ -5,7 +5,9 @@ export const permissions = shield(
     Query: {
       currentUser: isAuthenticated
     },
-    Mutation: {}
+    Mutation: {
+      createComment: isAuthenticated
+    }
   },
   { allowExternalErrors: true }
 );
