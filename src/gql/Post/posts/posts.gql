@@ -1,3 +1,21 @@
+type PostPageInfo {
+  startCursor: DateTime
+  endCursor: DateTime
+  hasNextPage: Boolean
+  hasPreviousPage: Boolean
+}
+
+type PostEdge {
+  node: Post
+  cursor: String
+}
+
+type PostsConnection {
+  totalCount: Int
+  edges: [PostEdge]
+  pageInfo: PostPageInfo
+}
+
 type Query {
-  posts(boardId: String!, after: String, offset: Int): [Post!]
+  posts(boardId: String!, cursor: DateTime, offset: Int): PostsConnection
 }
