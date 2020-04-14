@@ -381,6 +381,7 @@ type PageInfo {
 type Post {
   id: ID!
   board: Board!
+  user: User!
   title: String!
   content: String!
   createdAt: DateTime!
@@ -396,6 +397,7 @@ type PostConnection {
 input PostCreateInput {
   id: ID
   board: BoardCreateOneWithoutPostsInput!
+  user: UserCreateOneInput!
   title: String!
   content: String!
 }
@@ -412,6 +414,7 @@ input PostCreateOneInput {
 
 input PostCreateWithoutBoardInput {
   id: ID
+  user: UserCreateOneInput!
   title: String!
   content: String!
 }
@@ -631,12 +634,14 @@ input PostSubscriptionWhereInput {
 
 input PostUpdateDataInput {
   board: BoardUpdateOneRequiredWithoutPostsInput
+  user: UserUpdateOneRequiredInput
   title: String
   content: String
 }
 
 input PostUpdateInput {
   board: BoardUpdateOneRequiredWithoutPostsInput
+  user: UserUpdateOneRequiredInput
   title: String
   content: String
 }
@@ -676,6 +681,7 @@ input PostUpdateOneRequiredInput {
 }
 
 input PostUpdateWithoutBoardDataInput {
+  user: UserUpdateOneRequiredInput
   title: String
   content: String
 }
@@ -712,6 +718,7 @@ input PostWhereInput {
   id_ends_with: ID
   id_not_ends_with: ID
   board: BoardWhereInput
+  user: UserWhereInput
   title: String
   title_not: String
   title_in: [String!]

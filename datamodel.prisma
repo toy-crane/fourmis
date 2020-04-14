@@ -29,6 +29,7 @@ type Board {
 type Post {
   id: ID! @id
   board: Board!
+  user: User!
   title: String!
   content: String!
   createdAt: DateTime! @createdAt
