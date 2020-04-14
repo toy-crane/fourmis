@@ -1,0 +1,21 @@
+type CommentPageInfo {
+  startCursor: DateTime
+  endCursor: DateTime
+  hasNextPage: Boolean
+  hasPreviousPage: Boolean
+}
+
+type CommentEdge {
+  node: Comment
+  cursor: String
+}
+
+type CommentsConnection {
+  totalCount: Int
+  edges: [CommentEdge]
+  pageInfo: CommentPageInfo
+}
+
+type Query {
+  comments(postId: String!, cursor: DateTime, offset: Int): CommentsConnection
+}

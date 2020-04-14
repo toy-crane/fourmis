@@ -3,4 +3,6 @@ type Comment {
   text: String!
   user: User!
   post: Post!
+  createdAt: DateTime
+  updatedAt: DateTime
 }
