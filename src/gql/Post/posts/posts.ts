@@ -96,7 +96,6 @@ const query: IResolvers = {
     },
     hasPreviousPage: async parent => {
       const { cursor, boardId } = parent;
-      console.log(boardId, cursor);
       return await prisma.$exists.post({
         createdAt_gte: cursor,
         board: { id: boardId }

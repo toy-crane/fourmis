@@ -6,6 +6,17 @@ const query: IResolvers = {
     post: async (_, { id }, ctx, info) => {
       return prisma.post({ id });
     }
+  },
+  Post: {
+    commentsCount: async parent => {
+      const { id } = parent;
+      return await prisma
+        .commentsConnection({
+          where: { post: { id } }
+        })
+        .aggregate()
+        .count();
+    }
   }
 };
 export default query;

@@ -3,6 +3,7 @@ type Post {
   board: Board!
   title: String!
   content: String!
+  commentsCount: Int!
   createdAt: DateTime
   updatedAt: DateTime
 }
