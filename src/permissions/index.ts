@@ -4,7 +4,7 @@ export const permissions = shield(
   {
     Query: {
       currentUser: isAuthenticated,
-      isLiked: isAuthenticated
+      isPostLiked: isAuthenticated
     },
     Mutation: {
       createComment: isAuthenticated,

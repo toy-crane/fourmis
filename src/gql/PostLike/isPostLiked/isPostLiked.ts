@@ -3,7 +3,7 @@ import { IResolvers } from "graphql-tools";
 
 const query: IResolvers = {
   Query: {
-    isLiked: async (_, { postId }, { user }) => {
+    isPostLiked: async (_, { postId }, { user }) => {
       const filterOptions = {
         post: { id: postId },
         user: { id: user.id }
