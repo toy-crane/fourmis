@@ -18,6 +18,7 @@ export type Maybe<T> = T | undefined | null;
 export interface Exists {
   board: (where?: BoardWhereInput) => Promise<boolean>;
   comment: (where?: CommentWhereInput) => Promise<boolean>;
+  like: (where?: LikeWhereInput) => Promise<boolean>;
   post: (where?: PostWhereInput) => Promise<boolean>;
   product: (where?: ProductWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
@@ -80,6 +81,25 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => CommentConnectionPromise;
+  like: (where: LikeWhereUniqueInput) => LikeNullablePromise;
+  likes: (args?: {
+    where?: LikeWhereInput;
+    orderBy?: LikeOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Like>;
+  likesConnection: (args?: {
+    where?: LikeWhereInput;
+    orderBy?: LikeOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => LikeConnectionPromise;
   post: (where: PostWhereUniqueInput) => PostNullablePromise;
   posts: (args?: {
     where?: PostWhereInput;
@@ -171,6 +191,18 @@ export interface Prisma {
   }) => CommentPromise;
   deleteComment: (where: CommentWhereUniqueInput) => CommentPromise;
   deleteManyComments: (where?: CommentWhereInput) => BatchPayloadPromise;
+  createLike: (data: LikeCreateInput) => LikePromise;
+  updateLike: (args: {
+    data: LikeUpdateInput;
+    where: LikeWhereUniqueInput;
+  }) => LikePromise;
+  upsertLike: (args: {
+    where: LikeWhereUniqueInput;
+    create: LikeCreateInput;
+    update: LikeUpdateInput;
+  }) => LikePromise;
+  deleteLike: (where: LikeWhereUniqueInput) => LikePromise;
+  deleteManyLikes: (where?: LikeWhereInput) => BatchPayloadPromise;
   createPost: (data: PostCreateInput) => PostPromise;
   updatePost: (args: {
     data: PostUpdateInput;
@@ -234,6 +266,9 @@ export interface Subscription {
   comment: (
     where?: CommentSubscriptionWhereInput
   ) => CommentSubscriptionPayloadSubscription;
+  like: (
+    where?: LikeSubscriptionWhereInput
+  ) => LikeSubscriptionPayloadSubscription;
   post: (
     where?: PostSubscriptionWhereInput
   ) => PostSubscriptionPayloadSubscription;
@@ -283,6 +318,14 @@ export type CommentOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
+export type LikeOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
 export type ProductOrderByInput =
   | "id_ASC"
   | "id_DESC"
@@ -315,18 +358,18 @@ export type UserOrderByInput =
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
-export interface PostUpdateWithoutBoardDataInput {
-  title?: Maybe<String>;
-  content?: Maybe<String>;
+export interface PostUpdateWithWhereUniqueWithoutBoardInput {
+  where: PostWhereUniqueInput;
+  data: PostUpdateWithoutBoardDataInput;
 }
 
 export type BoardWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
-export interface PostUpdateManyDataInput {
-  title?: Maybe<String>;
-  content?: Maybe<String>;
+export interface PostUpdateManyWithWhereNestedInput {
+  where: PostScalarWhereInput;
+  data: PostUpdateManyDataInput;
 }
 
 export interface ProductWhereInput {
@@ -408,18 +451,30 @@ export interface ProductWhereInput {
   NOT?: Maybe<ProductWhereInput[] | ProductWhereInput>;
 }
 
-export interface BoardUpdateOneRequiredWithoutPostsInput {
-  create?: Maybe<BoardCreateWithoutPostsInput>;
-  update?: Maybe<BoardUpdateWithoutPostsDataInput>;
-  upsert?: Maybe<BoardUpsertWithoutPostsInput>;
-  connect?: Maybe<BoardWhereUniqueInput>;
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  email?: Maybe<String>;
+  username?: Maybe<String>;
+}>;
+
+export interface CommentUpdateInput {
+  text?: Maybe<String>;
+  user?: Maybe<UserUpdateOneRequiredInput>;
+  post?: Maybe<PostUpdateOneRequiredInput>;
 }
 
-export interface UserUpdateDataInput {
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  username?: Maybe<String>;
-  name?: Maybe<String>;
+export interface BoardUpsertWithoutPostsInput {
+  update: BoardUpdateWithoutPostsDataInput;
+  create: BoardCreateWithoutPostsInput;
+}
+
+export interface PostUpdateManyDataInput {
+  title?: Maybe<String>;
+  content?: Maybe<String>;
+}
+
+export interface BoardUpdateWithoutPostsDataInput {
+  product?: Maybe<ProductUpdateOneRequiredWithoutBoardInput>;
 }
 
 export interface ProductSubscriptionWhereInput {
@@ -433,73 +488,39 @@ export interface ProductSubscriptionWhereInput {
   NOT?: Maybe<ProductSubscriptionWhereInput[] | ProductSubscriptionWhereInput>;
 }
 
-export interface UserUpdateOneRequiredInput {
-  create?: Maybe<UserCreateInput>;
-  update?: Maybe<UserUpdateDataInput>;
-  upsert?: Maybe<UserUpsertNestedInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
+export interface BoardUpdateOneRequiredWithoutPostsInput {
+  create?: Maybe<BoardCreateWithoutPostsInput>;
+  update?: Maybe<BoardUpdateWithoutPostsDataInput>;
+  upsert?: Maybe<BoardUpsertWithoutPostsInput>;
+  connect?: Maybe<BoardWhereUniqueInput>;
 }
 
-export interface BoardCreateInput {
-  id?: Maybe<ID_Input>;
-  product: ProductCreateOneWithoutBoardInput;
-  posts?: Maybe<PostCreateManyWithoutBoardInput>;
-}
-
-export interface UserSubscriptionWhereInput {
+export interface LikeSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
   updatedFields_contains_every?: Maybe<String[] | String>;
   updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<UserWhereInput>;
-  AND?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
-  OR?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
-  NOT?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
+  node?: Maybe<LikeWhereInput>;
+  AND?: Maybe<LikeSubscriptionWhereInput[] | LikeSubscriptionWhereInput>;
+  OR?: Maybe<LikeSubscriptionWhereInput[] | LikeSubscriptionWhereInput>;
+  NOT?: Maybe<LikeSubscriptionWhereInput[] | LikeSubscriptionWhereInput>;
 }
 
-export interface ProductCreateOneWithoutBoardInput {
-  create?: Maybe<ProductCreateWithoutBoardInput>;
-  connect?: Maybe<ProductWhereUniqueInput>;
-}
-
-export interface CommentSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<CommentWhereInput>;
-  AND?: Maybe<CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput>;
-  OR?: Maybe<CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput>;
-  NOT?: Maybe<CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput>;
-}
-
-export interface ProductCreateWithoutBoardInput {
-  id?: Maybe<ID_Input>;
-  symbol: String;
-  engName: String;
-  korName: String;
+export interface PostUpdateDataInput {
+  board?: Maybe<BoardUpdateOneRequiredWithoutPostsInput>;
+  title?: Maybe<String>;
+  content?: Maybe<String>;
 }
 
 export type CommentWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
-export interface PostCreateManyWithoutBoardInput {
-  create?: Maybe<PostCreateWithoutBoardInput[] | PostCreateWithoutBoardInput>;
-  connect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
-}
-
-export interface UserUpdateInput {
+export interface UserUpdateManyMutationInput {
   email?: Maybe<String>;
   password?: Maybe<String>;
   username?: Maybe<String>;
   name?: Maybe<String>;
-}
-
-export interface PostCreateWithoutBoardInput {
-  id?: Maybe<ID_Input>;
-  title: String;
-  content: String;
 }
 
 export interface UserWhereInput {
@@ -594,9 +615,22 @@ export interface UserWhereInput {
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
-export interface BoardUpdateInput {
-  product?: Maybe<ProductUpdateOneRequiredWithoutBoardInput>;
-  posts?: Maybe<PostUpdateManyWithoutBoardInput>;
+export interface BoardCreateInput {
+  id?: Maybe<ID_Input>;
+  product: ProductCreateOneWithoutBoardInput;
+  posts?: Maybe<PostCreateManyWithoutBoardInput>;
+}
+
+export interface UserUpdateInput {
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  username?: Maybe<String>;
+  name?: Maybe<String>;
+}
+
+export interface ProductCreateOneWithoutBoardInput {
+  create?: Maybe<ProductCreateWithoutBoardInput>;
+  connect?: Maybe<ProductWhereUniqueInput>;
 }
 
 export interface BoardUpsertWithoutProductInput {
@@ -604,11 +638,20 @@ export interface BoardUpsertWithoutProductInput {
   create: BoardCreateWithoutProductInput;
 }
 
-export interface ProductUpdateOneRequiredWithoutBoardInput {
-  create?: Maybe<ProductCreateWithoutBoardInput>;
-  update?: Maybe<ProductUpdateWithoutBoardDataInput>;
-  upsert?: Maybe<ProductUpsertWithoutBoardInput>;
-  connect?: Maybe<ProductWhereUniqueInput>;
+export interface ProductCreateWithoutBoardInput {
+  id?: Maybe<ID_Input>;
+  symbol: String;
+  engName: String;
+  korName: String;
+}
+
+export interface BoardUpdateWithoutProductDataInput {
+  posts?: Maybe<PostUpdateManyWithoutBoardInput>;
+}
+
+export interface PostCreateManyWithoutBoardInput {
+  create?: Maybe<PostCreateWithoutBoardInput[] | PostCreateWithoutBoardInput>;
+  connect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
 }
 
 export interface BoardUpdateOneWithoutProductInput {
@@ -620,27 +663,60 @@ export interface BoardUpdateOneWithoutProductInput {
   connect?: Maybe<BoardWhereUniqueInput>;
 }
 
+export interface PostCreateWithoutBoardInput {
+  id?: Maybe<ID_Input>;
+  title: String;
+  content: String;
+}
+
+export interface BoardCreateWithoutProductInput {
+  id?: Maybe<ID_Input>;
+  posts?: Maybe<PostCreateManyWithoutBoardInput>;
+}
+
+export interface BoardUpdateInput {
+  product?: Maybe<ProductUpdateOneRequiredWithoutBoardInput>;
+  posts?: Maybe<PostUpdateManyWithoutBoardInput>;
+}
+
+export type PostWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface ProductUpdateOneRequiredWithoutBoardInput {
+  create?: Maybe<ProductCreateWithoutBoardInput>;
+  update?: Maybe<ProductUpdateWithoutBoardDataInput>;
+  upsert?: Maybe<ProductUpsertWithoutBoardInput>;
+  connect?: Maybe<ProductWhereUniqueInput>;
+}
+
+export interface PostUpdateManyMutationInput {
+  title?: Maybe<String>;
+  content?: Maybe<String>;
+}
+
 export interface ProductUpdateWithoutBoardDataInput {
   symbol?: Maybe<String>;
   engName?: Maybe<String>;
   korName?: Maybe<String>;
 }
 
-export interface ProductUpdateInput {
+export type ProductWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
   symbol?: Maybe<String>;
   engName?: Maybe<String>;
   korName?: Maybe<String>;
-  board?: Maybe<BoardUpdateOneWithoutProductInput>;
-}
+}>;
 
 export interface ProductUpsertWithoutBoardInput {
   update: ProductUpdateWithoutBoardDataInput;
   create: ProductCreateWithoutBoardInput;
 }
 
-export interface BoardCreateOneWithoutProductInput {
-  create?: Maybe<BoardCreateWithoutProductInput>;
-  connect?: Maybe<BoardWhereUniqueInput>;
+export interface LikeCreateInput {
+  id?: Maybe<ID_Input>;
+  user: UserCreateOneInput;
+  post: PostCreateOneInput;
 }
 
 export interface PostUpdateManyWithoutBoardInput {
@@ -663,110 +739,49 @@ export interface PostUpdateManyWithoutBoardInput {
   >;
 }
 
-export interface ProductCreateInput {
-  id?: Maybe<ID_Input>;
-  symbol: String;
-  engName: String;
-  korName: String;
-  board?: Maybe<BoardCreateOneWithoutProductInput>;
+export interface PostUpsertNestedInput {
+  update: PostUpdateDataInput;
+  create: PostCreateInput;
 }
 
-export interface PostUpdateWithWhereUniqueWithoutBoardInput {
-  where: PostWhereUniqueInput;
-  data: PostUpdateWithoutBoardDataInput;
+export interface PostUpdateOneRequiredInput {
+  create?: Maybe<PostCreateInput>;
+  update?: Maybe<PostUpdateDataInput>;
+  upsert?: Maybe<PostUpsertNestedInput>;
+  connect?: Maybe<PostWhereUniqueInput>;
 }
 
-export interface PostUpdateInput {
-  board?: Maybe<BoardUpdateOneRequiredWithoutPostsInput>;
+export interface PostSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<PostWhereInput>;
+  AND?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
+  OR?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
+  NOT?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
+}
+
+export interface PostUpdateWithoutBoardDataInput {
   title?: Maybe<String>;
   content?: Maybe<String>;
 }
 
-export interface PostUpdateDataInput {
-  board?: Maybe<BoardUpdateOneRequiredWithoutPostsInput>;
-  title?: Maybe<String>;
-  content?: Maybe<String>;
+export interface BoardSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<BoardWhereInput>;
+  AND?: Maybe<BoardSubscriptionWhereInput[] | BoardSubscriptionWhereInput>;
+  OR?: Maybe<BoardSubscriptionWhereInput[] | BoardSubscriptionWhereInput>;
+  NOT?: Maybe<BoardSubscriptionWhereInput[] | BoardSubscriptionWhereInput>;
 }
-
-export type UserWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  email?: Maybe<String>;
-  username?: Maybe<String>;
-}>;
 
 export interface PostUpsertWithWhereUniqueWithoutBoardInput {
   where: PostWhereUniqueInput;
   update: PostUpdateWithoutBoardDataInput;
   create: PostCreateWithoutBoardInput;
-}
-
-export interface BoardUpsertWithoutPostsInput {
-  update: BoardUpdateWithoutPostsDataInput;
-  create: BoardCreateWithoutPostsInput;
-}
-
-export interface PostScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  title?: Maybe<String>;
-  title_not?: Maybe<String>;
-  title_in?: Maybe<String[] | String>;
-  title_not_in?: Maybe<String[] | String>;
-  title_lt?: Maybe<String>;
-  title_lte?: Maybe<String>;
-  title_gt?: Maybe<String>;
-  title_gte?: Maybe<String>;
-  title_contains?: Maybe<String>;
-  title_not_contains?: Maybe<String>;
-  title_starts_with?: Maybe<String>;
-  title_not_starts_with?: Maybe<String>;
-  title_ends_with?: Maybe<String>;
-  title_not_ends_with?: Maybe<String>;
-  content?: Maybe<String>;
-  content_not?: Maybe<String>;
-  content_in?: Maybe<String[] | String>;
-  content_not_in?: Maybe<String[] | String>;
-  content_lt?: Maybe<String>;
-  content_lte?: Maybe<String>;
-  content_gt?: Maybe<String>;
-  content_gte?: Maybe<String>;
-  content_contains?: Maybe<String>;
-  content_not_contains?: Maybe<String>;
-  content_starts_with?: Maybe<String>;
-  content_not_starts_with?: Maybe<String>;
-  content_ends_with?: Maybe<String>;
-  content_not_ends_with?: Maybe<String>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
-  OR?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
-  NOT?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
 }
 
 export interface PostWhereInput {
@@ -834,20 +849,84 @@ export interface PostWhereInput {
   NOT?: Maybe<PostWhereInput[] | PostWhereInput>;
 }
 
-export interface PostUpdateManyWithWhereNestedInput {
-  where: PostScalarWhereInput;
-  data: PostUpdateManyDataInput;
+export interface PostScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  content?: Maybe<String>;
+  content_not?: Maybe<String>;
+  content_in?: Maybe<String[] | String>;
+  content_not_in?: Maybe<String[] | String>;
+  content_lt?: Maybe<String>;
+  content_lte?: Maybe<String>;
+  content_gt?: Maybe<String>;
+  content_gte?: Maybe<String>;
+  content_contains?: Maybe<String>;
+  content_not_contains?: Maybe<String>;
+  content_starts_with?: Maybe<String>;
+  content_not_starts_with?: Maybe<String>;
+  content_ends_with?: Maybe<String>;
+  content_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
+  OR?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
+  NOT?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
 }
 
-export interface BoardSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<BoardWhereInput>;
-  AND?: Maybe<BoardSubscriptionWhereInput[] | BoardSubscriptionWhereInput>;
-  OR?: Maybe<BoardSubscriptionWhereInput[] | BoardSubscriptionWhereInput>;
-  NOT?: Maybe<BoardSubscriptionWhereInput[] | BoardSubscriptionWhereInput>;
+export type LikeWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface UserUpsertNestedInput {
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
+}
+
+export interface ProductUpdateInput {
+  symbol?: Maybe<String>;
+  engName?: Maybe<String>;
+  korName?: Maybe<String>;
+  board?: Maybe<BoardUpdateOneWithoutProductInput>;
 }
 
 export interface BoardWhereInput {
@@ -888,6 +967,51 @@ export interface BoardWhereInput {
   AND?: Maybe<BoardWhereInput[] | BoardWhereInput>;
   OR?: Maybe<BoardWhereInput[] | BoardWhereInput>;
   NOT?: Maybe<BoardWhereInput[] | BoardWhereInput>;
+}
+
+export interface ProductCreateInput {
+  id?: Maybe<ID_Input>;
+  symbol: String;
+  engName: String;
+  korName: String;
+  board?: Maybe<BoardCreateOneWithoutProductInput>;
+}
+
+export interface UserUpdateDataInput {
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  username?: Maybe<String>;
+  name?: Maybe<String>;
+}
+
+export interface LikeUpdateInput {
+  user?: Maybe<UserUpdateOneRequiredInput>;
+  post?: Maybe<PostUpdateOneRequiredInput>;
+}
+
+export interface UserUpdateOneRequiredInput {
+  create?: Maybe<UserCreateInput>;
+  update?: Maybe<UserUpdateDataInput>;
+  upsert?: Maybe<UserUpsertNestedInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<UserWhereInput>;
+  AND?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
+  OR?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
+  NOT?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
+}
+
+export interface CommentCreateInput {
+  id?: Maybe<ID_Input>;
+  text: String;
+  user: UserCreateOneInput;
+  post: PostCreateOneInput;
 }
 
 export interface CommentWhereInput {
@@ -942,47 +1066,47 @@ export interface CommentWhereInput {
   NOT?: Maybe<CommentWhereInput[] | CommentWhereInput>;
 }
 
-export interface PostUpdateOneRequiredInput {
-  create?: Maybe<PostCreateInput>;
-  update?: Maybe<PostUpdateDataInput>;
-  upsert?: Maybe<PostUpsertNestedInput>;
-  connect?: Maybe<PostWhereUniqueInput>;
-}
-
-export interface BoardUpdateWithoutProductDataInput {
-  posts?: Maybe<PostUpdateManyWithoutBoardInput>;
-}
-
-export interface UserUpsertNestedInput {
-  update: UserUpdateDataInput;
-  create: UserCreateInput;
-}
-
-export interface BoardCreateWithoutProductInput {
-  id?: Maybe<ID_Input>;
-  posts?: Maybe<PostCreateManyWithoutBoardInput>;
-}
-
-export interface CommentCreateInput {
-  id?: Maybe<ID_Input>;
-  text: String;
-  user: UserCreateOneInput;
-  post: PostCreateOneInput;
-}
-
-export interface PostUpdateManyMutationInput {
-  title?: Maybe<String>;
-  content?: Maybe<String>;
-}
-
 export interface UserCreateOneInput {
   create?: Maybe<UserCreateInput>;
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface PostUpsertNestedInput {
-  update: PostUpdateDataInput;
-  create: PostCreateInput;
+export interface LikeWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  user?: Maybe<UserWhereInput>;
+  post?: Maybe<PostWhereInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<LikeWhereInput[] | LikeWhereInput>;
+  OR?: Maybe<LikeWhereInput[] | LikeWhereInput>;
+  NOT?: Maybe<LikeWhereInput[] | LikeWhereInput>;
 }
 
 export interface UserCreateInput {
@@ -993,39 +1117,10 @@ export interface UserCreateInput {
   name?: Maybe<String>;
 }
 
-export interface PostSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<PostWhereInput>;
-  AND?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
-  OR?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
-  NOT?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
-}
-
-export interface PostCreateOneInput {
-  create?: Maybe<PostCreateInput>;
-  connect?: Maybe<PostWhereUniqueInput>;
-}
-
-export interface ProductUpdateManyMutationInput {
-  symbol?: Maybe<String>;
-  engName?: Maybe<String>;
-  korName?: Maybe<String>;
-}
-
-export type ProductWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  symbol?: Maybe<String>;
-  engName?: Maybe<String>;
-  korName?: Maybe<String>;
-}>;
-
-export interface CommentUpdateInput {
-  text?: Maybe<String>;
-  user?: Maybe<UserUpdateOneRequiredInput>;
-  post?: Maybe<PostUpdateOneRequiredInput>;
+export interface PostUpdateInput {
+  board?: Maybe<BoardUpdateOneRequiredWithoutPostsInput>;
+  title?: Maybe<String>;
+  content?: Maybe<String>;
 }
 
 export interface BoardCreateWithoutPostsInput {
@@ -1045,43 +1140,39 @@ export interface PostCreateInput {
   content: String;
 }
 
+export interface PostCreateOneInput {
+  create?: Maybe<PostCreateInput>;
+  connect?: Maybe<PostWhereUniqueInput>;
+}
+
 export interface CommentUpdateManyMutationInput {
   text?: Maybe<String>;
 }
 
-export type PostWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
-
-export interface UserUpdateManyMutationInput {
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  username?: Maybe<String>;
-  name?: Maybe<String>;
+export interface BoardCreateOneWithoutProductInput {
+  create?: Maybe<BoardCreateWithoutProductInput>;
+  connect?: Maybe<BoardWhereUniqueInput>;
 }
 
-export interface BoardUpdateWithoutPostsDataInput {
-  product?: Maybe<ProductUpdateOneRequiredWithoutBoardInput>;
+export interface ProductUpdateManyMutationInput {
+  symbol?: Maybe<String>;
+  engName?: Maybe<String>;
+  korName?: Maybe<String>;
+}
+
+export interface CommentSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<CommentWhereInput>;
+  AND?: Maybe<CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput>;
+  OR?: Maybe<CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput>;
+  NOT?: Maybe<CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput>;
 }
 
 export interface NodeNode {
   id: ID_Output;
-}
-
-export interface BatchPayload {
-  count: Long;
-}
-
-export interface BatchPayloadPromise
-  extends Promise<BatchPayload>,
-    Fragmentable {
-  count: () => Promise<Long>;
-}
-
-export interface BatchPayloadSubscription
-  extends Promise<AsyncIterator<BatchPayload>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Long>>;
 }
 
 export interface UserPreviousValues {
@@ -1118,25 +1209,76 @@ export interface UserPreviousValuesSubscription
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface CommentConnection {
-  pageInfo: PageInfo;
-  edges: CommentEdge[];
+export interface CommentEdge {
+  node: Comment;
+  cursor: String;
 }
 
-export interface CommentConnectionPromise
-  extends Promise<CommentConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<CommentEdge>>() => T;
-  aggregate: <T = AggregateCommentPromise>() => T;
+export interface CommentEdgePromise extends Promise<CommentEdge>, Fragmentable {
+  node: <T = CommentPromise>() => T;
+  cursor: () => Promise<String>;
 }
 
-export interface CommentConnectionSubscription
-  extends Promise<AsyncIterator<CommentConnection>>,
+export interface CommentEdgeSubscription
+  extends Promise<AsyncIterator<CommentEdge>>,
     Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<CommentEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateCommentSubscription>() => T;
+  node: <T = CommentSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface Post {
+  id: ID_Output;
+  title: String;
+  content: String;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+}
+
+export interface PostPromise extends Promise<Post>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  board: <T = BoardPromise>() => T;
+  title: () => Promise<String>;
+  content: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface PostSubscription
+  extends Promise<AsyncIterator<Post>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  board: <T = BoardSubscription>() => T;
+  title: () => Promise<AsyncIterator<String>>;
+  content: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface PostNullablePromise
+  extends Promise<Post | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  board: <T = BoardPromise>() => T;
+  title: () => Promise<String>;
+  content: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface AggregateComment {
+  count: Int;
+}
+
+export interface AggregateCommentPromise
+  extends Promise<AggregateComment>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateCommentSubscription
+  extends Promise<AsyncIterator<AggregateComment>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface PageInfo {
@@ -1160,6 +1302,43 @@ export interface PageInfoSubscription
   hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
   startCursor: () => Promise<AsyncIterator<String>>;
   endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface BatchPayload {
+  count: Long;
+}
+
+export interface BatchPayloadPromise
+  extends Promise<BatchPayload>,
+    Fragmentable {
+  count: () => Promise<Long>;
+}
+
+export interface BatchPayloadSubscription
+  extends Promise<AsyncIterator<BatchPayload>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Long>>;
+}
+
+export interface CommentConnection {
+  pageInfo: PageInfo;
+  edges: CommentEdge[];
+}
+
+export interface CommentConnectionPromise
+  extends Promise<CommentConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<CommentEdge>>() => T;
+  aggregate: <T = AggregateCommentPromise>() => T;
+}
+
+export interface CommentConnectionSubscription
+  extends Promise<AsyncIterator<CommentConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<CommentEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateCommentSubscription>() => T;
 }
 
 export interface ProductPreviousValues {
@@ -1191,6 +1370,23 @@ export interface ProductPreviousValuesSubscription
   korName: () => Promise<AsyncIterator<String>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface UserEdge {
+  node: User;
+  cursor: String;
+}
+
+export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
+  node: <T = UserPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface UserEdgeSubscription
+  extends Promise<AsyncIterator<UserEdge>>,
+    Fragmentable {
+  node: <T = UserSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface User {
@@ -1237,59 +1433,47 @@ export interface UserNullablePromise
   updatedAt: () => Promise<DateTimeOutput>;
 }
 
-export interface Post {
+export interface Product {
   id: ID_Output;
-  title: String;
-  content: String;
+  symbol: String;
+  engName: String;
+  korName: String;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
 }
 
-export interface PostPromise extends Promise<Post>, Fragmentable {
+export interface ProductPromise extends Promise<Product>, Fragmentable {
   id: () => Promise<ID_Output>;
+  symbol: () => Promise<String>;
+  engName: () => Promise<String>;
+  korName: () => Promise<String>;
   board: <T = BoardPromise>() => T;
-  title: () => Promise<String>;
-  content: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
 
-export interface PostSubscription
-  extends Promise<AsyncIterator<Post>>,
+export interface ProductSubscription
+  extends Promise<AsyncIterator<Product>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  symbol: () => Promise<AsyncIterator<String>>;
+  engName: () => Promise<AsyncIterator<String>>;
+  korName: () => Promise<AsyncIterator<String>>;
   board: <T = BoardSubscription>() => T;
-  title: () => Promise<AsyncIterator<String>>;
-  content: () => Promise<AsyncIterator<String>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface PostNullablePromise
-  extends Promise<Post | null>,
+export interface ProductNullablePromise
+  extends Promise<Product | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  symbol: () => Promise<String>;
+  engName: () => Promise<String>;
+  korName: () => Promise<String>;
   board: <T = BoardPromise>() => T;
-  title: () => Promise<String>;
-  content: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface AggregateUser {
-  count: Int;
-}
-
-export interface AggregateUserPromise
-  extends Promise<AggregateUser>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateUserSubscription
-  extends Promise<AsyncIterator<AggregateUser>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface Comment {
@@ -1330,57 +1514,21 @@ export interface CommentNullablePromise
   updatedAt: () => Promise<DateTimeOutput>;
 }
 
-export interface UserConnection {
-  pageInfo: PageInfo;
-  edges: UserEdge[];
+export interface ProductEdge {
+  node: Product;
+  cursor: String;
 }
 
-export interface UserConnectionPromise
-  extends Promise<UserConnection>,
+export interface ProductEdgePromise extends Promise<ProductEdge>, Fragmentable {
+  node: <T = ProductPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface ProductEdgeSubscription
+  extends Promise<AsyncIterator<ProductEdge>>,
     Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<UserEdge>>() => T;
-  aggregate: <T = AggregateUserPromise>() => T;
-}
-
-export interface UserConnectionSubscription
-  extends Promise<AsyncIterator<UserConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateUserSubscription>() => T;
-}
-
-export interface AggregateBoard {
-  count: Int;
-}
-
-export interface AggregateBoardPromise
-  extends Promise<AggregateBoard>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateBoardSubscription
-  extends Promise<AsyncIterator<AggregateBoard>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface AggregateProduct {
-  count: Int;
-}
-
-export interface AggregateProductPromise
-  extends Promise<AggregateProduct>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateProductSubscription
-  extends Promise<AsyncIterator<AggregateProduct>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  node: <T = ProductSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface Board {
@@ -1441,25 +1589,29 @@ export interface BoardNullablePromise
   updatedAt: () => Promise<DateTimeOutput>;
 }
 
-export interface ProductConnection {
-  pageInfo: PageInfo;
-  edges: ProductEdge[];
+export interface UserSubscriptionPayload {
+  mutation: MutationType;
+  node: User;
+  updatedFields: String[];
+  previousValues: UserPreviousValues;
 }
 
-export interface ProductConnectionPromise
-  extends Promise<ProductConnection>,
+export interface UserSubscriptionPayloadPromise
+  extends Promise<UserSubscriptionPayload>,
     Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<ProductEdge>>() => T;
-  aggregate: <T = AggregateProductPromise>() => T;
+  mutation: () => Promise<MutationType>;
+  node: <T = UserPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = UserPreviousValuesPromise>() => T;
 }
 
-export interface ProductConnectionSubscription
-  extends Promise<AsyncIterator<ProductConnection>>,
+export interface UserSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<UserSubscriptionPayload>>,
     Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<ProductEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateProductSubscription>() => T;
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = UserSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = UserPreviousValuesSubscription>() => T;
 }
 
 export interface BoardSubscriptionPayload {
@@ -1487,20 +1639,21 @@ export interface BoardSubscriptionPayloadSubscription
   previousValues: <T = BoardPreviousValuesSubscription>() => T;
 }
 
-export interface AggregatePost {
-  count: Int;
+export interface PostEdge {
+  node: Post;
+  cursor: String;
 }
 
-export interface AggregatePostPromise
-  extends Promise<AggregatePost>,
-    Fragmentable {
-  count: () => Promise<Int>;
+export interface PostEdgePromise extends Promise<PostEdge>, Fragmentable {
+  node: <T = PostPromise>() => T;
+  cursor: () => Promise<String>;
 }
 
-export interface AggregatePostSubscription
-  extends Promise<AsyncIterator<AggregatePost>>,
+export interface PostEdgeSubscription
+  extends Promise<AsyncIterator<PostEdge>>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  node: <T = PostSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface BoardPreviousValues {
@@ -1525,59 +1678,57 @@ export interface BoardPreviousValuesSubscription
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface PostConnection {
-  pageInfo: PageInfo;
-  edges: PostEdge[];
+export interface AggregateLike {
+  count: Int;
 }
 
-export interface PostConnectionPromise
-  extends Promise<PostConnection>,
+export interface AggregateLikePromise
+  extends Promise<AggregateLike>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateLikeSubscription
+  extends Promise<AsyncIterator<AggregateLike>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface AggregateBoard {
+  count: Int;
+}
+
+export interface AggregateBoardPromise
+  extends Promise<AggregateBoard>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateBoardSubscription
+  extends Promise<AsyncIterator<AggregateBoard>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface LikeConnection {
+  pageInfo: PageInfo;
+  edges: LikeEdge[];
+}
+
+export interface LikeConnectionPromise
+  extends Promise<LikeConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<PostEdge>>() => T;
-  aggregate: <T = AggregatePostPromise>() => T;
+  edges: <T = FragmentableArray<LikeEdge>>() => T;
+  aggregate: <T = AggregateLikePromise>() => T;
 }
 
-export interface PostConnectionSubscription
-  extends Promise<AsyncIterator<PostConnection>>,
+export interface LikeConnectionSubscription
+  extends Promise<AsyncIterator<LikeConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<PostEdgeSubscription>>>() => T;
-  aggregate: <T = AggregatePostSubscription>() => T;
-}
-
-export interface BoardEdge {
-  node: Board;
-  cursor: String;
-}
-
-export interface BoardEdgePromise extends Promise<BoardEdge>, Fragmentable {
-  node: <T = BoardPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface BoardEdgeSubscription
-  extends Promise<AsyncIterator<BoardEdge>>,
-    Fragmentable {
-  node: <T = BoardSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface CommentEdge {
-  node: Comment;
-  cursor: String;
-}
-
-export interface CommentEdgePromise extends Promise<CommentEdge>, Fragmentable {
-  node: <T = CommentPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface CommentEdgeSubscription
-  extends Promise<AsyncIterator<CommentEdge>>,
-    Fragmentable {
-  node: <T = CommentSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
+  edges: <T = Promise<AsyncIterator<LikeEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateLikeSubscription>() => T;
 }
 
 export interface CommentSubscriptionPayload {
@@ -1605,38 +1756,189 @@ export interface CommentSubscriptionPayloadSubscription
   previousValues: <T = CommentPreviousValuesSubscription>() => T;
 }
 
-export interface UserEdge {
-  node: User;
+export interface Like {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+}
+
+export interface LikePromise extends Promise<Like>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  user: <T = UserPromise>() => T;
+  post: <T = PostPromise>() => T;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface LikeSubscription
+  extends Promise<AsyncIterator<Like>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  user: <T = UserSubscription>() => T;
+  post: <T = PostSubscription>() => T;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface LikeNullablePromise
+  extends Promise<Like | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  user: <T = UserPromise>() => T;
+  post: <T = PostPromise>() => T;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface CommentPreviousValues {
+  id: ID_Output;
+  text: String;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+}
+
+export interface CommentPreviousValuesPromise
+  extends Promise<CommentPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  text: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface CommentPreviousValuesSubscription
+  extends Promise<AsyncIterator<CommentPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  text: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface UserConnection {
+  pageInfo: PageInfo;
+  edges: UserEdge[];
+}
+
+export interface UserConnectionPromise
+  extends Promise<UserConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserEdge>>() => T;
+  aggregate: <T = AggregateUserPromise>() => T;
+}
+
+export interface UserConnectionSubscription
+  extends Promise<AsyncIterator<UserConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateUserSubscription>() => T;
+}
+
+export interface BoardEdge {
+  node: Board;
   cursor: String;
 }
 
-export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
-  node: <T = UserPromise>() => T;
+export interface BoardEdgePromise extends Promise<BoardEdge>, Fragmentable {
+  node: <T = BoardPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface UserEdgeSubscription
-  extends Promise<AsyncIterator<UserEdge>>,
+export interface BoardEdgeSubscription
+  extends Promise<AsyncIterator<BoardEdge>>,
     Fragmentable {
-  node: <T = UserSubscription>() => T;
+  node: <T = BoardSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface ProductEdge {
-  node: Product;
-  cursor: String;
+export interface ProductConnection {
+  pageInfo: PageInfo;
+  edges: ProductEdge[];
 }
 
-export interface ProductEdgePromise extends Promise<ProductEdge>, Fragmentable {
-  node: <T = ProductPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface ProductEdgeSubscription
-  extends Promise<AsyncIterator<ProductEdge>>,
+export interface ProductConnectionPromise
+  extends Promise<ProductConnection>,
     Fragmentable {
-  node: <T = ProductSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<ProductEdge>>() => T;
+  aggregate: <T = AggregateProductPromise>() => T;
+}
+
+export interface ProductConnectionSubscription
+  extends Promise<AsyncIterator<ProductConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ProductEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateProductSubscription>() => T;
+}
+
+export interface LikeSubscriptionPayload {
+  mutation: MutationType;
+  node: Like;
+  updatedFields: String[];
+  previousValues: LikePreviousValues;
+}
+
+export interface LikeSubscriptionPayloadPromise
+  extends Promise<LikeSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = LikePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = LikePreviousValuesPromise>() => T;
+}
+
+export interface LikeSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<LikeSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = LikeSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = LikePreviousValuesSubscription>() => T;
+}
+
+export interface PostConnection {
+  pageInfo: PageInfo;
+  edges: PostEdge[];
+}
+
+export interface PostConnectionPromise
+  extends Promise<PostConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<PostEdge>>() => T;
+  aggregate: <T = AggregatePostPromise>() => T;
+}
+
+export interface PostConnectionSubscription
+  extends Promise<AsyncIterator<PostConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<PostEdgeSubscription>>>() => T;
+  aggregate: <T = AggregatePostSubscription>() => T;
+}
+
+export interface BoardConnection {
+  pageInfo: PageInfo;
+  edges: BoardEdge[];
+}
+
+export interface BoardConnectionPromise
+  extends Promise<BoardConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<BoardEdge>>() => T;
+  aggregate: <T = AggregateBoardPromise>() => T;
+}
+
+export interface BoardConnectionSubscription
+  extends Promise<AsyncIterator<BoardConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<BoardEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateBoardSubscription>() => T;
 }
 
 export interface PostPreviousValues {
@@ -1717,165 +2019,99 @@ export interface ProductSubscriptionPayloadSubscription
   previousValues: <T = ProductPreviousValuesSubscription>() => T;
 }
 
-export interface CommentPreviousValues {
+export interface LikePreviousValues {
   id: ID_Output;
-  text: String;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
 }
 
-export interface CommentPreviousValuesPromise
-  extends Promise<CommentPreviousValues>,
+export interface LikePreviousValuesPromise
+  extends Promise<LikePreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  text: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
 
-export interface CommentPreviousValuesSubscription
-  extends Promise<AsyncIterator<CommentPreviousValues>>,
+export interface LikePreviousValuesSubscription
+  extends Promise<AsyncIterator<LikePreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  text: () => Promise<AsyncIterator<String>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface BoardConnection {
-  pageInfo: PageInfo;
-  edges: BoardEdge[];
-}
-
-export interface BoardConnectionPromise
-  extends Promise<BoardConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<BoardEdge>>() => T;
-  aggregate: <T = AggregateBoardPromise>() => T;
-}
-
-export interface BoardConnectionSubscription
-  extends Promise<AsyncIterator<BoardConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<BoardEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateBoardSubscription>() => T;
-}
-
-export interface Product {
-  id: ID_Output;
-  symbol: String;
-  engName: String;
-  korName: String;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
-}
-
-export interface ProductPromise extends Promise<Product>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  symbol: () => Promise<String>;
-  engName: () => Promise<String>;
-  korName: () => Promise<String>;
-  board: <T = BoardPromise>() => T;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface ProductSubscription
-  extends Promise<AsyncIterator<Product>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  symbol: () => Promise<AsyncIterator<String>>;
-  engName: () => Promise<AsyncIterator<String>>;
-  korName: () => Promise<AsyncIterator<String>>;
-  board: <T = BoardSubscription>() => T;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface ProductNullablePromise
-  extends Promise<Product | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  symbol: () => Promise<String>;
-  engName: () => Promise<String>;
-  korName: () => Promise<String>;
-  board: <T = BoardPromise>() => T;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface UserSubscriptionPayload {
-  mutation: MutationType;
-  node: User;
-  updatedFields: String[];
-  previousValues: UserPreviousValues;
-}
-
-export interface UserSubscriptionPayloadPromise
-  extends Promise<UserSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = UserPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = UserPreviousValuesPromise>() => T;
-}
-
-export interface UserSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<UserSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = UserSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = UserPreviousValuesSubscription>() => T;
-}
-
-export interface AggregateComment {
+export interface AggregateUser {
   count: Int;
 }
 
-export interface AggregateCommentPromise
-  extends Promise<AggregateComment>,
+export interface AggregateUserPromise
+  extends Promise<AggregateUser>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateCommentSubscription
-  extends Promise<AsyncIterator<AggregateComment>>,
+export interface AggregateUserSubscription
+  extends Promise<AsyncIterator<AggregateUser>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface PostEdge {
-  node: Post;
+export interface LikeEdge {
+  node: Like;
   cursor: String;
 }
 
-export interface PostEdgePromise extends Promise<PostEdge>, Fragmentable {
-  node: <T = PostPromise>() => T;
+export interface LikeEdgePromise extends Promise<LikeEdge>, Fragmentable {
+  node: <T = LikePromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface PostEdgeSubscription
-  extends Promise<AsyncIterator<PostEdge>>,
+export interface LikeEdgeSubscription
+  extends Promise<AsyncIterator<LikeEdge>>,
     Fragmentable {
-  node: <T = PostSubscription>() => T;
+  node: <T = LikeSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
+
+export interface AggregatePost {
+  count: Int;
+}
+
+export interface AggregatePostPromise
+  extends Promise<AggregatePost>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregatePostSubscription
+  extends Promise<AsyncIterator<AggregatePost>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface AggregateProduct {
+  count: Int;
+}
+
+export interface AggregateProductPromise
+  extends Promise<AggregateProduct>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateProductSubscription
+  extends Promise<AsyncIterator<AggregateProduct>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export type Long = string;
 
 /*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
 */
 export type Int = number;
-
-export type Long = string;
-
-/*
-The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
-*/
-export type ID_Input = string | number;
-export type ID_Output = string;
 
 /*
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
@@ -1891,6 +2127,12 @@ export type DateTimeInput = Date | string;
 DateTime scalar output type, which is always a string
 */
 export type DateTimeOutput = string;
+
+/*
+The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
+*/
+export type ID_Input = string | number;
+export type ID_Output = string;
 
 /*
 The `Boolean` scalar type represents `true` or `false`.
@@ -1920,6 +2162,10 @@ export const models: Model[] = [
   },
   {
     name: "Comment",
+    embedded: false
+  },
+  {
+    name: "Like",
     embedded: false
   }
 ];
