@@ -16,6 +16,15 @@ const query: IResolvers = {
         })
         .aggregate()
         .count();
+    },
+    likesCount: async (parent, _, { user }) => {
+      const { id } = parent;
+      return await prisma
+        .postLikesConnection({
+          where: { post: { id }, user: { id: user.id } }
+        })
+        .aggregate()
+        .count();
     }
   }
 };

@@ -4,6 +4,7 @@ type Post {
   title: String!
   content: String!
   commentsCount: Int!
+  likesCount: Int!
   createdAt: DateTime
   updatedAt: DateTime
 }
