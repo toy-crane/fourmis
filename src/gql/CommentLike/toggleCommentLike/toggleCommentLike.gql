@@ -1,0 +1,3 @@
+type Mutation {
+  toggleCommentLike(commentId: String!): Boolean!
+}

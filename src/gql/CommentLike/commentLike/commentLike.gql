@@ -1,0 +1,7 @@
+type CommentLike {
+  id: ID!
+  user: User!
+  comment: Comment!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}

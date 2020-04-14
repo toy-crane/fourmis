@@ -32,6 +32,15 @@ type Post {
   user: User!
   title: String!
   content: String!
+  postLikes: [PostLike!]
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type PostLike {
+  id: ID! @id
+  user: User!
+  post: Post!
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }
@@ -41,14 +50,15 @@ type Comment {
   text: String!
   user: User!
   post: Post!
+  commentLikes: [CommentLike!]
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }
 
-type PostLike {
+type CommentLike {
   id: ID! @id
   user: User!
-  post: Post!
+  comment: Comment!
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }

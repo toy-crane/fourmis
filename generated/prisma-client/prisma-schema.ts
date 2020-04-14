@@ -10,6 +10,10 @@ type AggregateComment {
   count: Int!
 }
 
+type AggregateCommentLike {
+  count: Int!
+}
+
 type AggregatePost {
   count: Int!
 }
@@ -196,6 +200,7 @@ type Comment {
   text: String!
   user: User!
   post: Post!
+  commentLikes(where: CommentLikeWhereInput, orderBy: CommentLikeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CommentLike!]
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -211,11 +216,201 @@ input CommentCreateInput {
   text: String!
   user: UserCreateOneInput!
   post: PostCreateOneInput!
+  commentLikes: CommentLikeCreateManyWithoutCommentInput
+}
+
+input CommentCreateOneWithoutCommentLikesInput {
+  create: CommentCreateWithoutCommentLikesInput
+  connect: CommentWhereUniqueInput
+}
+
+input CommentCreateWithoutCommentLikesInput {
+  id: ID
+  text: String!
+  user: UserCreateOneInput!
+  post: PostCreateOneInput!
 }
 
 type CommentEdge {
   node: Comment!
   cursor: String!
+}
+
+type CommentLike {
+  id: ID!
+  user: User!
+  comment: Comment!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type CommentLikeConnection {
+  pageInfo: PageInfo!
+  edges: [CommentLikeEdge]!
+  aggregate: AggregateCommentLike!
+}
+
+input CommentLikeCreateInput {
+  id: ID
+  user: UserCreateOneInput!
+  comment: CommentCreateOneWithoutCommentLikesInput!
+}
+
+input CommentLikeCreateManyWithoutCommentInput {
+  create: [CommentLikeCreateWithoutCommentInput!]
+  connect: [CommentLikeWhereUniqueInput!]
+}
+
+input CommentLikeCreateWithoutCommentInput {
+  id: ID
+  user: UserCreateOneInput!
+}
+
+type CommentLikeEdge {
+  node: CommentLike!
+  cursor: String!
+}
+
+enum CommentLikeOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type CommentLikePreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input CommentLikeScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [CommentLikeScalarWhereInput!]
+  OR: [CommentLikeScalarWhereInput!]
+  NOT: [CommentLikeScalarWhereInput!]
+}
+
+type CommentLikeSubscriptionPayload {
+  mutation: MutationType!
+  node: CommentLike
+  updatedFields: [String!]
+  previousValues: CommentLikePreviousValues
+}
+
+input CommentLikeSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: CommentLikeWhereInput
+  AND: [CommentLikeSubscriptionWhereInput!]
+  OR: [CommentLikeSubscriptionWhereInput!]
+  NOT: [CommentLikeSubscriptionWhereInput!]
+}
+
+input CommentLikeUpdateInput {
+  user: UserUpdateOneRequiredInput
+  comment: CommentUpdateOneRequiredWithoutCommentLikesInput
+}
+
+input CommentLikeUpdateManyWithoutCommentInput {
+  create: [CommentLikeCreateWithoutCommentInput!]
+  delete: [CommentLikeWhereUniqueInput!]
+  connect: [CommentLikeWhereUniqueInput!]
+  set: [CommentLikeWhereUniqueInput!]
+  disconnect: [CommentLikeWhereUniqueInput!]
+  update: [CommentLikeUpdateWithWhereUniqueWithoutCommentInput!]
+  upsert: [CommentLikeUpsertWithWhereUniqueWithoutCommentInput!]
+  deleteMany: [CommentLikeScalarWhereInput!]
+}
+
+input CommentLikeUpdateWithoutCommentDataInput {
+  user: UserUpdateOneRequiredInput
+}
+
+input CommentLikeUpdateWithWhereUniqueWithoutCommentInput {
+  where: CommentLikeWhereUniqueInput!
+  data: CommentLikeUpdateWithoutCommentDataInput!
+}
+
+input CommentLikeUpsertWithWhereUniqueWithoutCommentInput {
+  where: CommentLikeWhereUniqueInput!
+  update: CommentLikeUpdateWithoutCommentDataInput!
+  create: CommentLikeCreateWithoutCommentInput!
+}
+
+input CommentLikeWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  user: UserWhereInput
+  comment: CommentWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [CommentLikeWhereInput!]
+  OR: [CommentLikeWhereInput!]
+  NOT: [CommentLikeWhereInput!]
+}
+
+input CommentLikeWhereUniqueInput {
+  id: ID
 }
 
 enum CommentOrderByInput {
@@ -258,10 +453,29 @@ input CommentUpdateInput {
   text: String
   user: UserUpdateOneRequiredInput
   post: PostUpdateOneRequiredInput
+  commentLikes: CommentLikeUpdateManyWithoutCommentInput
 }
 
 input CommentUpdateManyMutationInput {
   text: String
+}
+
+input CommentUpdateOneRequiredWithoutCommentLikesInput {
+  create: CommentCreateWithoutCommentLikesInput
+  update: CommentUpdateWithoutCommentLikesDataInput
+  upsert: CommentUpsertWithoutCommentLikesInput
+  connect: CommentWhereUniqueInput
+}
+
+input CommentUpdateWithoutCommentLikesDataInput {
+  text: String
+  user: UserUpdateOneRequiredInput
+  post: PostUpdateOneRequiredInput
+}
+
+input CommentUpsertWithoutCommentLikesInput {
+  update: CommentUpdateWithoutCommentLikesDataInput!
+  create: CommentCreateWithoutCommentLikesInput!
 }
 
 input CommentWhereInput {
@@ -295,6 +509,9 @@ input CommentWhereInput {
   text_not_ends_with: String
   user: UserWhereInput
   post: PostWhereInput
+  commentLikes_every: CommentLikeWhereInput
+  commentLikes_some: CommentLikeWhereInput
+  commentLikes_none: CommentLikeWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -336,6 +553,11 @@ type Mutation {
   upsertComment(where: CommentWhereUniqueInput!, create: CommentCreateInput!, update: CommentUpdateInput!): Comment!
   deleteComment(where: CommentWhereUniqueInput!): Comment
   deleteManyComments(where: CommentWhereInput): BatchPayload!
+  createCommentLike(data: CommentLikeCreateInput!): CommentLike!
+  updateCommentLike(data: CommentLikeUpdateInput!, where: CommentLikeWhereUniqueInput!): CommentLike
+  upsertCommentLike(where: CommentLikeWhereUniqueInput!, create: CommentLikeCreateInput!, update: CommentLikeUpdateInput!): CommentLike!
+  deleteCommentLike(where: CommentLikeWhereUniqueInput!): CommentLike
+  deleteManyCommentLikes(where: CommentLikeWhereInput): BatchPayload!
   createPost(data: PostCreateInput!): Post!
   updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
   updateManyPosts(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
@@ -384,6 +606,7 @@ type Post {
   user: User!
   title: String!
   content: String!
+  postLikes(where: PostLikeWhereInput, orderBy: PostLikeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PostLike!]
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -400,6 +623,7 @@ input PostCreateInput {
   user: UserCreateOneInput!
   title: String!
   content: String!
+  postLikes: PostLikeCreateManyWithoutPostInput
 }
 
 input PostCreateManyWithoutBoardInput {
@@ -412,8 +636,22 @@ input PostCreateOneInput {
   connect: PostWhereUniqueInput
 }
 
+input PostCreateOneWithoutPostLikesInput {
+  create: PostCreateWithoutPostLikesInput
+  connect: PostWhereUniqueInput
+}
+
 input PostCreateWithoutBoardInput {
   id: ID
+  user: UserCreateOneInput!
+  title: String!
+  content: String!
+  postLikes: PostLikeCreateManyWithoutPostInput
+}
+
+input PostCreateWithoutPostLikesInput {
+  id: ID
+  board: BoardCreateOneWithoutPostsInput!
   user: UserCreateOneInput!
   title: String!
   content: String!
@@ -441,7 +679,17 @@ type PostLikeConnection {
 input PostLikeCreateInput {
   id: ID
   user: UserCreateOneInput!
-  post: PostCreateOneInput!
+  post: PostCreateOneWithoutPostLikesInput!
+}
+
+input PostLikeCreateManyWithoutPostInput {
+  create: [PostLikeCreateWithoutPostInput!]
+  connect: [PostLikeWhereUniqueInput!]
+}
+
+input PostLikeCreateWithoutPostInput {
+  id: ID
+  user: UserCreateOneInput!
 }
 
 type PostLikeEdge {
@@ -464,6 +712,42 @@ type PostLikePreviousValues {
   updatedAt: DateTime!
 }
 
+input PostLikeScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [PostLikeScalarWhereInput!]
+  OR: [PostLikeScalarWhereInput!]
+  NOT: [PostLikeScalarWhereInput!]
+}
+
 type PostLikeSubscriptionPayload {
   mutation: MutationType!
   node: PostLike
@@ -484,7 +768,33 @@ input PostLikeSubscriptionWhereInput {
 
 input PostLikeUpdateInput {
   user: UserUpdateOneRequiredInput
-  post: PostUpdateOneRequiredInput
+  post: PostUpdateOneRequiredWithoutPostLikesInput
+}
+
+input PostLikeUpdateManyWithoutPostInput {
+  create: [PostLikeCreateWithoutPostInput!]
+  delete: [PostLikeWhereUniqueInput!]
+  connect: [PostLikeWhereUniqueInput!]
+  set: [PostLikeWhereUniqueInput!]
+  disconnect: [PostLikeWhereUniqueInput!]
+  update: [PostLikeUpdateWithWhereUniqueWithoutPostInput!]
+  upsert: [PostLikeUpsertWithWhereUniqueWithoutPostInput!]
+  deleteMany: [PostLikeScalarWhereInput!]
+}
+
+input PostLikeUpdateWithoutPostDataInput {
+  user: UserUpdateOneRequiredInput
+}
+
+input PostLikeUpdateWithWhereUniqueWithoutPostInput {
+  where: PostLikeWhereUniqueInput!
+  data: PostLikeUpdateWithoutPostDataInput!
+}
+
+input PostLikeUpsertWithWhereUniqueWithoutPostInput {
+  where: PostLikeWhereUniqueInput!
+  update: PostLikeUpdateWithoutPostDataInput!
+  create: PostLikeCreateWithoutPostInput!
 }
 
 input PostLikeWhereInput {
@@ -637,6 +947,7 @@ input PostUpdateDataInput {
   user: UserUpdateOneRequiredInput
   title: String
   content: String
+  postLikes: PostLikeUpdateManyWithoutPostInput
 }
 
 input PostUpdateInput {
@@ -644,6 +955,7 @@ input PostUpdateInput {
   user: UserUpdateOneRequiredInput
   title: String
   content: String
+  postLikes: PostLikeUpdateManyWithoutPostInput
 }
 
 input PostUpdateManyDataInput {
@@ -680,7 +992,22 @@ input PostUpdateOneRequiredInput {
   connect: PostWhereUniqueInput
 }
 
+input PostUpdateOneRequiredWithoutPostLikesInput {
+  create: PostCreateWithoutPostLikesInput
+  update: PostUpdateWithoutPostLikesDataInput
+  upsert: PostUpsertWithoutPostLikesInput
+  connect: PostWhereUniqueInput
+}
+
 input PostUpdateWithoutBoardDataInput {
+  user: UserUpdateOneRequiredInput
+  title: String
+  content: String
+  postLikes: PostLikeUpdateManyWithoutPostInput
+}
+
+input PostUpdateWithoutPostLikesDataInput {
+  board: BoardUpdateOneRequiredWithoutPostsInput
   user: UserUpdateOneRequiredInput
   title: String
   content: String
@@ -694,6 +1021,11 @@ input PostUpdateWithWhereUniqueWithoutBoardInput {
 input PostUpsertNestedInput {
   update: PostUpdateDataInput!
   create: PostCreateInput!
+}
+
+input PostUpsertWithoutPostLikesInput {
+  update: PostUpdateWithoutPostLikesDataInput!
+  create: PostCreateWithoutPostLikesInput!
 }
 
 input PostUpsertWithWhereUniqueWithoutBoardInput {
@@ -747,6 +1079,9 @@ input PostWhereInput {
   content_not_starts_with: String
   content_ends_with: String
   content_not_ends_with: String
+  postLikes_every: PostLikeWhereInput
+  postLikes_some: PostLikeWhereInput
+  postLikes_none: PostLikeWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -979,6 +1314,9 @@ type Query {
   comment(where: CommentWhereUniqueInput!): Comment
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment]!
   commentsConnection(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentConnection!
+  commentLike(where: CommentLikeWhereUniqueInput!): CommentLike
+  commentLikes(where: CommentLikeWhereInput, orderBy: CommentLikeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CommentLike]!
+  commentLikesConnection(where: CommentLikeWhereInput, orderBy: CommentLikeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentLikeConnection!
   post(where: PostWhereUniqueInput!): Post
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
   postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
@@ -997,6 +1335,7 @@ type Query {
 type Subscription {
   board(where: BoardSubscriptionWhereInput): BoardSubscriptionPayload
   comment(where: CommentSubscriptionWhereInput): CommentSubscriptionPayload
+  commentLike(where: CommentLikeSubscriptionWhereInput): CommentLikeSubscriptionPayload
   post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
   postLike(where: PostLikeSubscriptionWhereInput): PostLikeSubscriptionPayload
   product(where: ProductSubscriptionWhereInput): ProductSubscriptionPayload
