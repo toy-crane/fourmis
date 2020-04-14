@@ -10,11 +10,11 @@ type AggregateComment {
   count: Int!
 }
 
-type AggregateLike {
+type AggregatePost {
   count: Int!
 }
 
-type AggregatePost {
+type AggregatePostLike {
   count: Int!
 }
 
@@ -322,111 +322,6 @@ input CommentWhereUniqueInput {
 
 scalar DateTime
 
-type Like {
-  id: ID!
-  user: User!
-  post: Post!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type LikeConnection {
-  pageInfo: PageInfo!
-  edges: [LikeEdge]!
-  aggregate: AggregateLike!
-}
-
-input LikeCreateInput {
-  id: ID
-  user: UserCreateOneInput!
-  post: PostCreateOneInput!
-}
-
-type LikeEdge {
-  node: Like!
-  cursor: String!
-}
-
-enum LikeOrderByInput {
-  id_ASC
-  id_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type LikePreviousValues {
-  id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type LikeSubscriptionPayload {
-  mutation: MutationType!
-  node: Like
-  updatedFields: [String!]
-  previousValues: LikePreviousValues
-}
-
-input LikeSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: LikeWhereInput
-  AND: [LikeSubscriptionWhereInput!]
-  OR: [LikeSubscriptionWhereInput!]
-  NOT: [LikeSubscriptionWhereInput!]
-}
-
-input LikeUpdateInput {
-  user: UserUpdateOneRequiredInput
-  post: PostUpdateOneRequiredInput
-}
-
-input LikeWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  user: UserWhereInput
-  post: PostWhereInput
-  createdAt: DateTime
-  createdAt_not: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_not_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-  updatedAt_not: DateTime
-  updatedAt_in: [DateTime!]
-  updatedAt_not_in: [DateTime!]
-  updatedAt_lt: DateTime
-  updatedAt_lte: DateTime
-  updatedAt_gt: DateTime
-  updatedAt_gte: DateTime
-  AND: [LikeWhereInput!]
-  OR: [LikeWhereInput!]
-  NOT: [LikeWhereInput!]
-}
-
-input LikeWhereUniqueInput {
-  id: ID
-}
-
 scalar Long
 
 type Mutation {
@@ -441,17 +336,17 @@ type Mutation {
   upsertComment(where: CommentWhereUniqueInput!, create: CommentCreateInput!, update: CommentUpdateInput!): Comment!
   deleteComment(where: CommentWhereUniqueInput!): Comment
   deleteManyComments(where: CommentWhereInput): BatchPayload!
-  createLike(data: LikeCreateInput!): Like!
-  updateLike(data: LikeUpdateInput!, where: LikeWhereUniqueInput!): Like
-  upsertLike(where: LikeWhereUniqueInput!, create: LikeCreateInput!, update: LikeUpdateInput!): Like!
-  deleteLike(where: LikeWhereUniqueInput!): Like
-  deleteManyLikes(where: LikeWhereInput): BatchPayload!
   createPost(data: PostCreateInput!): Post!
   updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
   updateManyPosts(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
   upsertPost(where: PostWhereUniqueInput!, create: PostCreateInput!, update: PostUpdateInput!): Post!
   deletePost(where: PostWhereUniqueInput!): Post
   deleteManyPosts(where: PostWhereInput): BatchPayload!
+  createPostLike(data: PostLikeCreateInput!): PostLike!
+  updatePostLike(data: PostLikeUpdateInput!, where: PostLikeWhereUniqueInput!): PostLike
+  upsertPostLike(where: PostLikeWhereUniqueInput!, create: PostLikeCreateInput!, update: PostLikeUpdateInput!): PostLike!
+  deletePostLike(where: PostLikeWhereUniqueInput!): PostLike
+  deleteManyPostLikes(where: PostLikeWhereInput): BatchPayload!
   createProduct(data: ProductCreateInput!): Product!
   updateProduct(data: ProductUpdateInput!, where: ProductWhereUniqueInput!): Product
   updateManyProducts(data: ProductUpdateManyMutationInput!, where: ProductWhereInput): BatchPayload!
@@ -524,6 +419,111 @@ input PostCreateWithoutBoardInput {
 type PostEdge {
   node: Post!
   cursor: String!
+}
+
+type PostLike {
+  id: ID!
+  user: User!
+  post: Post!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type PostLikeConnection {
+  pageInfo: PageInfo!
+  edges: [PostLikeEdge]!
+  aggregate: AggregatePostLike!
+}
+
+input PostLikeCreateInput {
+  id: ID
+  user: UserCreateOneInput!
+  post: PostCreateOneInput!
+}
+
+type PostLikeEdge {
+  node: PostLike!
+  cursor: String!
+}
+
+enum PostLikeOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type PostLikePreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type PostLikeSubscriptionPayload {
+  mutation: MutationType!
+  node: PostLike
+  updatedFields: [String!]
+  previousValues: PostLikePreviousValues
+}
+
+input PostLikeSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: PostLikeWhereInput
+  AND: [PostLikeSubscriptionWhereInput!]
+  OR: [PostLikeSubscriptionWhereInput!]
+  NOT: [PostLikeSubscriptionWhereInput!]
+}
+
+input PostLikeUpdateInput {
+  user: UserUpdateOneRequiredInput
+  post: PostUpdateOneRequiredInput
+}
+
+input PostLikeWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  user: UserWhereInput
+  post: PostWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [PostLikeWhereInput!]
+  OR: [PostLikeWhereInput!]
+  NOT: [PostLikeWhereInput!]
+}
+
+input PostLikeWhereUniqueInput {
+  id: ID
 }
 
 enum PostOrderByInput {
@@ -972,12 +972,12 @@ type Query {
   comment(where: CommentWhereUniqueInput!): Comment
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment]!
   commentsConnection(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentConnection!
-  like(where: LikeWhereUniqueInput!): Like
-  likes(where: LikeWhereInput, orderBy: LikeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Like]!
-  likesConnection(where: LikeWhereInput, orderBy: LikeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LikeConnection!
   post(where: PostWhereUniqueInput!): Post
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
   postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
+  postLike(where: PostLikeWhereUniqueInput!): PostLike
+  postLikes(where: PostLikeWhereInput, orderBy: PostLikeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PostLike]!
+  postLikesConnection(where: PostLikeWhereInput, orderBy: PostLikeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostLikeConnection!
   product(where: ProductWhereUniqueInput!): Product
   products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product]!
   productsConnection(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductConnection!
@@ -990,8 +990,8 @@ type Query {
 type Subscription {
   board(where: BoardSubscriptionWhereInput): BoardSubscriptionPayload
   comment(where: CommentSubscriptionWhereInput): CommentSubscriptionPayload
-  like(where: LikeSubscriptionWhereInput): LikeSubscriptionPayload
   post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
+  postLike(where: PostLikeSubscriptionWhereInput): PostLikeSubscriptionPayload
   product(where: ProductSubscriptionWhereInput): ProductSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }

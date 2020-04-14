@@ -3,16 +3,16 @@ import { IResolvers } from "graphql-tools";
 
 const mutation: IResolvers = {
   Mutation: {
-    toggleLike: async (_, { postId }, { user }) => {
+    togglePostLike: async (_, { postId }, { user }) => {
       const filterOptions = {
         post: { id: postId },
         user: { id: user.id }
       };
-      const likeExists = await prisma.$exists.like(filterOptions);
+      const likeExists = await prisma.$exists.postLike(filterOptions);
       if (likeExists) {
-        await prisma.deleteManyLikes(filterOptions);
+        await prisma.deleteManyPostLikes(filterOptions);
       } else {
-        await prisma.createLike({
+        await prisma.createPostLike({
           post: {
             connect: {
               id: postId
