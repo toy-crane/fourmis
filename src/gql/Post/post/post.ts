@@ -4,6 +4,9 @@ import { IResolvers } from "graphql-tools";
 const query: IResolvers = {
   Query: {
     post: async (_, { id }) => {
+      const post = await prisma.post({ id });
+      const viewsCount = post.viewsCount + 1;
+      await prisma.updatePost({ where: { id }, data: { viewsCount } });
       return await prisma.post({ id });
     }
   },
