@@ -32,6 +32,7 @@ type Post {
   user: User!
   title: String!
   content: String!
+  viewsCount: Int! @default(value: 0)
   postLikes: [PostLike!]
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt

@@ -32,7 +32,7 @@ const query: IResolvers = {
     pageInfo: async parent => parent,
     totalCount: async parent => {
       const { postId } = parent;
-      return await prisma
+      const count = await prisma
         .commentsConnection({
           where: {
             post: {
@@ -42,6 +42,7 @@ const query: IResolvers = {
         })
         .aggregate()
         .count();
+      return count;
     }
   },
   CommentPageInfo: {

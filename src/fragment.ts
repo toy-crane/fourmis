@@ -8,6 +8,9 @@ export const POST_FRAGMENT = `
     id
     content
     title
+    comments{
+        text
+    }
 `;
 
 export const BOARD_FRAGMENT = `

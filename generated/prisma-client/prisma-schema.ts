@@ -606,6 +606,7 @@ type Post {
   user: User!
   title: String!
   content: String!
+  viewsCount: Int!
   postLikes(where: PostLikeWhereInput, orderBy: PostLikeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PostLike!]
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -623,6 +624,7 @@ input PostCreateInput {
   user: UserCreateOneInput!
   title: String!
   content: String!
+  viewsCount: Int
   postLikes: PostLikeCreateManyWithoutPostInput
 }
 
@@ -646,6 +648,7 @@ input PostCreateWithoutBoardInput {
   user: UserCreateOneInput!
   title: String!
   content: String!
+  viewsCount: Int
   postLikes: PostLikeCreateManyWithoutPostInput
 }
 
@@ -655,6 +658,7 @@ input PostCreateWithoutPostLikesInput {
   user: UserCreateOneInput!
   title: String!
   content: String!
+  viewsCount: Int
 }
 
 type PostEdge {
@@ -846,6 +850,8 @@ enum PostOrderByInput {
   title_DESC
   content_ASC
   content_DESC
+  viewsCount_ASC
+  viewsCount_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -856,6 +862,7 @@ type PostPreviousValues {
   id: ID!
   title: String!
   content: String!
+  viewsCount: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -903,6 +910,14 @@ input PostScalarWhereInput {
   content_not_starts_with: String
   content_ends_with: String
   content_not_ends_with: String
+  viewsCount: Int
+  viewsCount_not: Int
+  viewsCount_in: [Int!]
+  viewsCount_not_in: [Int!]
+  viewsCount_lt: Int
+  viewsCount_lte: Int
+  viewsCount_gt: Int
+  viewsCount_gte: Int
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -947,6 +962,7 @@ input PostUpdateDataInput {
   user: UserUpdateOneRequiredInput
   title: String
   content: String
+  viewsCount: Int
   postLikes: PostLikeUpdateManyWithoutPostInput
 }
 
@@ -955,17 +971,20 @@ input PostUpdateInput {
   user: UserUpdateOneRequiredInput
   title: String
   content: String
+  viewsCount: Int
   postLikes: PostLikeUpdateManyWithoutPostInput
 }
 
 input PostUpdateManyDataInput {
   title: String
   content: String
+  viewsCount: Int
 }
 
 input PostUpdateManyMutationInput {
   title: String
   content: String
+  viewsCount: Int
 }
 
 input PostUpdateManyWithoutBoardInput {
@@ -1003,6 +1022,7 @@ input PostUpdateWithoutBoardDataInput {
   user: UserUpdateOneRequiredInput
   title: String
   content: String
+  viewsCount: Int
   postLikes: PostLikeUpdateManyWithoutPostInput
 }
 
@@ -1011,6 +1031,7 @@ input PostUpdateWithoutPostLikesDataInput {
   user: UserUpdateOneRequiredInput
   title: String
   content: String
+  viewsCount: Int
 }
 
 input PostUpdateWithWhereUniqueWithoutBoardInput {
@@ -1079,6 +1100,14 @@ input PostWhereInput {
   content_not_starts_with: String
   content_ends_with: String
   content_not_ends_with: String
+  viewsCount: Int
+  viewsCount_not: Int
+  viewsCount_in: [Int!]
+  viewsCount_not_in: [Int!]
+  viewsCount_lt: Int
+  viewsCount_lte: Int
+  viewsCount_gt: Int
+  viewsCount_gte: Int
   postLikes_every: PostLikeWhereInput
   postLikes_some: PostLikeWhereInput
   postLikes_none: PostLikeWhereInput
