@@ -2,19 +2,8 @@ import { IResolvers } from "graphql-tools";
 import { prisma } from "../../../../generated/prisma-client";
 
 const query: IResolvers = {
-  Query: {
-    posts: async (
-      _,
-      { boardId, cursor = new Date().toISOString(), offset = 10 }
-    ) => ({
-      boardId,
-      cursor,
-      offset
-    })
-  },
   PostsConnection: {
-    edges: async parent => {
-      const { boardId, cursor, offset } = parent;
+    edges: async ({ boardId, cursor, offset }) => {
       const posts = await prisma.posts({
         where: {
           board: { id: boardId },
@@ -30,8 +19,7 @@ const query: IResolvers = {
       return postEdges;
     },
     pageInfo: async parent => parent,
-    totalCount: async parent => {
-      const { boardId } = parent;
+    totalCount: async ({ boardId }) => {
       return await prisma
         .postsConnection({
           where: {
@@ -45,8 +33,7 @@ const query: IResolvers = {
     }
   },
   PostPageInfo: {
-    startCursor: async parent => {
-      const { cursor, boardId } = parent;
+    startCursor: async ({ cursor, boardId }) => {
       const postExists = await prisma.$exists.post({
         board: { id: boardId },
         createdAt_lt: cursor
@@ -64,8 +51,7 @@ const query: IResolvers = {
         return null;
       }
     },
-    endCursor: async parent => {
-      const { cursor, boardId, offset } = parent;
+    endCursor: async ({ cursor, boardId, offset }) => {
       const posts = await prisma.posts({
         where: {
           board: { id: boardId },
@@ -80,8 +66,7 @@ const query: IResolvers = {
         return null;
       }
     },
-    hasNextPage: async parent => {
-      const { cursor, boardId, offset } = parent;
+    hasNextPage: async ({ cursor, boardId, offset }) => {
       return (
         (await prisma
           .postsConnection({
@@ -94,8 +79,7 @@ const query: IResolvers = {
           .count()) > offset
       );
     },
-    hasPreviousPage: async parent => {
-      const { cursor, boardId } = parent;
+    hasPreviousPage: async ({ boardId, cursor }) => {
       return await prisma.$exists.post({
         createdAt_gte: cursor,
         board: { id: boardId }

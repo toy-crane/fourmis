@@ -1,7 +1,7 @@
 type Board {
   id: ID!
   product: Product!
-  posts: [Post!]
+  posts(cursor: DateTime, offset: Int): PostsConnection
 }
 
 type Query {
