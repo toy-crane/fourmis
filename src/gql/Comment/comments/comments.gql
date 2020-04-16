@@ -15,7 +15,3 @@ type CommentsConnection {
   edges: [CommentEdge]
   pageInfo: CommentPageInfo
 }
-
-type Query {
-  comments(postId: String!, cursor: DateTime, offset: Int): CommentsConnection
-}

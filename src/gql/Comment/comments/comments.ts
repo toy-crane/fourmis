@@ -2,16 +2,6 @@ import { IResolvers } from "graphql-tools";
 import { prisma } from "../../../../generated/prisma-client";
 
 const query: IResolvers = {
-  Query: {
-    comments: async (
-      _,
-      { postId, cursor = new Date().toISOString(), offset = 10 }
-    ) => ({
-      postId,
-      cursor,
-      offset
-    })
-  },
   CommentsConnection: {
     edges: async parent => {
       const { postId, cursor, offset } = parent;

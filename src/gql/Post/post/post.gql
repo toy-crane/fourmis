@@ -9,6 +9,7 @@ type Post {
   viewsCount: Int!
   createdAt: DateTime
   updatedAt: DateTime
+  comments(cursor: DateTime, offset: Int): CommentsConnection
 }
 
 type Query {

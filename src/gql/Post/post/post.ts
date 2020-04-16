@@ -28,6 +28,16 @@ const query: IResolvers = {
         })
         .aggregate()
         .count();
+    },
+    comments: async (
+      { id: postId },
+      { cursor = new Date().toISOString(), offset = 10 }
+    ) => {
+      return {
+        postId,
+        cursor,
+        offset
+      };
     }
   }
 };
