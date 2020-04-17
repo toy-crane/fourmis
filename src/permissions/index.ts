@@ -9,6 +9,7 @@ export const permissions = shield(
     Mutation: {
       createComment: isAuthenticated,
       togglePostLike: isAuthenticated,
+      toggleCommentLike: isAuthenticated,
       createPost: isAuthenticated
     }
   },
