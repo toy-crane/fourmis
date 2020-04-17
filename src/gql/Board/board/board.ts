@@ -1,6 +1,5 @@
 import { prisma } from "../../../../generated/prisma-client";
 import { IResolvers } from "graphql-tools";
-import { PRODUCT_FRAGMENT } from "../../../fragment";
 
 const query: IResolvers = {
   Query: {
