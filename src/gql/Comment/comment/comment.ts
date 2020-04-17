@@ -11,6 +11,17 @@ const query: IResolvers = {
         })
         .aggregate()
         .count();
+    },
+    isCommentLiked: async ({ id }, _, { user }) => {
+      if (user) {
+        const filterOptions = {
+          comment: { id },
+          user: { id: user.id }
+        };
+        return await prisma.$exists.commentLike(filterOptions);
+      } else {
+        return false;
+      }
     }
   }
 };

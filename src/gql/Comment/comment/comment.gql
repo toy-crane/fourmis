@@ -4,6 +4,7 @@ type Comment {
   user: User!
   post: Post!
   CommentlikesCount: Int!
+  isCommentLiked: Boolean!
   createdAt: DateTime
   updatedAt: DateTime
 }
