@@ -12,9 +12,9 @@ yarn add
 ```
 3.  DB에 prisma schema migration하기
 ```
-    prisma deploy
+prisma deploy
 ```
 4.  graphql-yoga 실행하기
 ```
-    yarn start
+yarn start
 ```
