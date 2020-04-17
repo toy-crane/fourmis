@@ -38,6 +38,17 @@ const query: IResolvers = {
         cursor,
         offset
       };
+    },
+    isPostLiked: async ({ id }, _, { user }) => {
+      if (user) {
+        const filterOptions = {
+          post: { id },
+          user: { id: user.id }
+        };
+        return await prisma.$exists.postLike(filterOptions);
+      } else {
+        return false;
+      }
     }
   }
 };
