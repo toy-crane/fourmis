@@ -7,13 +7,14 @@
         docker-compose up -d
 
 2.  패키지 설치하기
-
-    yarn add
-
+```
+yarn add
+```
 3.  DB에 prisma schema migration하기
-
+```
     prisma deploy
-
+```
 4.  graphql-yoga 실행하기
-
+```
     yarn start
+```
