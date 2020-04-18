@@ -4,7 +4,7 @@ import {
   ExtractJwt,
   VerifiedCallback
 } from "passport-jwt";
-import { prisma } from "../../generated/prisma-client";
+import { prisma } from "../prismaClient";
 
 const jwt_options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -13,7 +13,7 @@ const jwt_options = {
 
 const verifyUser: VerifiedCallback = async (payload, done) => {
   try {
-    const user = await prisma.user({ id: payload.id });
+    const user = await prisma.user.findOne({ where: { id: payload.id } });
     if (user) {
       return done(null, user);
     } else {
