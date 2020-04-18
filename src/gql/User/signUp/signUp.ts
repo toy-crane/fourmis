@@ -1,8 +1,7 @@
 import * as bcrypt from "bcryptjs";
 import generateJWT from "../../../utils/auth/generateJWT";
 import { IResolvers } from "graphql-tools";
-import { prisma } from "../../../prisma";
-prisma;
+import { prisma } from "../../../prismaClient";
 
 const mutation: IResolvers = {
   Mutation: {
