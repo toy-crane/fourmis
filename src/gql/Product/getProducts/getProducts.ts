@@ -1,10 +1,10 @@
-import { prisma } from "../../../../generated/prisma-client";
+import { prisma } from "../../../prismaClient";
 import { IResolvers } from "graphql-tools";
 
 const query: IResolvers = {
   Query: {
-    getProducts: async (_, {}, ctx, info) => {
-      return prisma.products();
+    getProducts: async (_, {}) => {
+      return prisma.product.findMany();
     }
   }
 };
