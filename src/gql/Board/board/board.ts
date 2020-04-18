@@ -1,16 +1,18 @@
-import { prisma } from "../../../../generated/prisma-client";
+import { prisma } from "../../../prismaClient";
 import { IResolvers } from "graphql-tools";
 
 const query: IResolvers = {
   Query: {
     board: async (_, { id }) => {
-      return await prisma.board({ id });
+      return await prisma.board.findOne({ where: { id } });
     }
   },
   Board: {
     product: async ({ id }) => {
-      const product = await prisma.products({ where: { board: { id } } });
-      return product[0];
+      const products = await prisma.product.findMany({
+        where: { board: { id } }
+      });
+      return products[0];
     },
     posts: async (
       { boardId },

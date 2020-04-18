@@ -1,13 +1,15 @@
-import { prisma } from "../../../../generated/prisma-client";
+import { prisma } from "../../../prismaClient";
 import { IResolvers } from "graphql-tools";
 
 const mutation: IResolvers = {
   Mutation: {
-    createBoard: async (_, { productId }, ctx, info) => {
-      return await prisma.createBoard({
-        product: {
-          connect: {
-            id: productId
+    createBoard: async (_, { productId }) => {
+      return await prisma.board.create({
+        data: {
+          product: {
+            connect: {
+              id: productId
+            }
           }
         }
       });
