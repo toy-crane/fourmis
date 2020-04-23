@@ -44,9 +44,9 @@ model Post {
   id        String    @id @default(cuid())
   content    String
   title      String
-  Board      Board     @relation(fields: [boardId], references: [id])
+  board      Board     @relation(fields: [boardId], references: [id])
   boardId    String
-  User       User      @relation(fields: [userId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
   userId     String
   viewsCount Int  @default(0)
   comments   Comment[]
@@ -57,9 +57,9 @@ model Post {
 
 model PostLike {
   id        String    @id @default(cuid())
-  Post      Post    @relation(fields: [postId], references: [id])
+  post      Post    @relation(fields: [postId], references: [id])
   postId    String
-  User       User      @relation(fields: [userId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
   userId     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -68,9 +68,9 @@ model PostLike {
 model Comment {
   id        String    @id @default(cuid())
   text        String
-  Post      Post    @relation(fields: [postId], references: [id])
+  post      Post    @relation(fields: [postId], references: [id])
   postId    String
-  User       User      @relation(fields: [userId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
   userId     String
   commentlikes CommentLike[]
   createdAt DateTime @default(now())
@@ -79,9 +79,9 @@ model Comment {
 
 model CommentLike {
   id        String    @id @default(cuid())
-  Comment   Comment @relation(fields: [commentId], references: [id])
+  comment   Comment @relation(fields: [commentId], references: [id])
   commentId String
-  User      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
