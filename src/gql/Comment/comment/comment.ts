@@ -1,16 +1,13 @@
-import { prisma } from "../../../../generated/prisma-client";
+import { prisma } from "../../../prismaClient";
 import { IResolvers } from "graphql-tools";
 
 const query: IResolvers = {
   Comment: {
     CommentlikesCount: async (parent, _, { user }) => {
       const { id } = parent;
-      return await prisma
-        .commentLikesConnection({
-          where: { comment: { id }, user: { id: user.id } }
-        })
-        .aggregate()
-        .count();
+      return await prisma.commentLike.count({
+        where: { comment: { id }, user: { id: user.id } }
+      });
     },
     isCommentLiked: async ({ id }, _, { user }) => {
       if (user) {
@@ -18,7 +15,10 @@ const query: IResolvers = {
           comment: { id },
           user: { id: user.id }
         };
-        return await prisma.$exists.commentLike(filterOptions);
+        const commentLikes = await prisma.commentLike.findMany({
+          where: filterOptions
+        });
+        return commentLikes.length > 0 ? true : false;
       } else {
         return false;
       }
