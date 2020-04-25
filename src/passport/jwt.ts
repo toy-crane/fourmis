@@ -14,7 +14,6 @@ const jwt_options = {
 };
 
 const verifyUser: VerifiedCallback = async (payload, done) => {
-  console.log(payload);
   try {
     const user = await prisma.user.findOne({ where: { id: payload.id } });
     if (user) {
@@ -34,7 +33,6 @@ export const authenticateJWT = (
   res: Response
 ): Promise<User> => {
   const { request: req } = originReq;
-  console.log(req);
   return new Promise((resolve, reject) => {
     passport.authenticate("jwt", { session: false }, (err, user) => {
       if (err) {
