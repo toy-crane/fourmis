@@ -30,10 +30,10 @@ const verifyUser: VerifiedCallback = async (payload, done) => {
 passport.use(new JWTStrategy(jwt_options, verifyUser));
 
 export const authenticateJWT = (
-  originReq: Request,
+  originReq: any,
   res: Response
 ): Promise<User> => {
-  const req = { request: originReq };
+  const { request: req } = originReq;
   console.log(req);
   return new Promise((resolve, reject) => {
     passport.authenticate("jwt", { session: false }, (err, user) => {
