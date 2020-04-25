@@ -2,7 +2,6 @@ import "./env";
 import { GraphQLServer } from "graphql-yoga";
 import schema from "./schema";
 import * as logger from "morgan";
-import getUser from "./utils/auth/getUser";
 import { permissions } from "./permissions/index";
 import * as passport from "passport";
 import { createContext } from "./context";
