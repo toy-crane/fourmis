@@ -1,4 +1,4 @@
-import { prisma } from "../../../../generated/prisma-client";
+import { prisma } from "../../../prismaClient";
 import { IResolvers } from "graphql-tools";
 
 const mutation: IResolvers = {
@@ -8,19 +8,23 @@ const mutation: IResolvers = {
         comment: { id: commentId },
         user: { id: user.id }
       };
-      const likeExists = await prisma.$exists.commentLike(filterOptions);
-      if (likeExists) {
-        await prisma.deleteManyCommentLikes(filterOptions);
+      const commentLikes = await prisma.commentLike.findMany({
+        where: filterOptions
+      });
+      if (commentLikes.length > 0) {
+        await prisma.commentLike.deleteMany({ where: filterOptions });
       } else {
-        await prisma.createCommentLike({
-          comment: {
-            connect: {
-              id: commentId
-            }
-          },
-          user: {
-            connect: {
-              id: user.id
+        await prisma.commentLike.create({
+          data: {
+            comment: {
+              connect: {
+                id: commentId
+              }
+            },
+            user: {
+              connect: {
+                id: user.id
+              }
             }
           }
         });

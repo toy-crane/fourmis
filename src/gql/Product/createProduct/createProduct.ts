@@ -1,13 +1,15 @@
-import { prisma } from "../../../../generated/prisma-client";
 import { IResolvers } from "graphql-tools";
+import { prisma } from "../../../prismaClient";
 
 const mutation: IResolvers = {
   Mutation: {
-    createProduct: async (_, { symbol, engName, korName }, ctx, info) => {
-      return prisma.createProduct({
-        symbol,
-        engName,
-        korName
+    createProduct: async (_, { symbol, engName, korName }) => {
+      return prisma.product.create({
+        data: {
+          symbol,
+          engName,
+          korName
+        }
       });
     }
   }

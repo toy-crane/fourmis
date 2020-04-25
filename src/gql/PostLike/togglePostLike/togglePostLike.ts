@@ -1,4 +1,4 @@
-import { prisma } from "../../../../generated/prisma-client";
+import { prisma } from "../../../prismaClient";
 import { IResolvers } from "graphql-tools";
 
 const mutation: IResolvers = {
@@ -8,19 +8,23 @@ const mutation: IResolvers = {
         post: { id: postId },
         user: { id: user.id }
       };
-      const likeExists = await prisma.$exists.postLike(filterOptions);
-      if (likeExists) {
-        await prisma.deleteManyPostLikes(filterOptions);
+      const postLikes = await prisma.postLike.findMany({
+        where: filterOptions
+      });
+      if (postLikes.length > 0) {
+        await prisma.postLike.deleteMany({ where: filterOptions });
       } else {
-        await prisma.createPostLike({
-          post: {
-            connect: {
-              id: postId
-            }
-          },
-          user: {
-            connect: {
-              id: user.id
+        await prisma.postLike.create({
+          data: {
+            post: {
+              connect: {
+                id: postId
+              }
+            },
+            user: {
+              connect: {
+                id: user.id
+              }
             }
           }
         });

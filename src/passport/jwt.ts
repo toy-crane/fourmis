@@ -16,7 +16,7 @@ const jwt_options = {
 const verifyUser: VerifiedCallback = async (payload, done) => {
   console.log(payload);
   try {
-    const user = await prisma.user({ id: payload.id });
+    const user = await prisma.user.findOne({ where: { id: payload.id } });
     if (user) {
       return done(null, user);
     } else {
