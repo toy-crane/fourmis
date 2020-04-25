@@ -5,17 +5,14 @@ import * as logger from "morgan";
 import getUser from "./utils/auth/getUser";
 import { permissions } from "./permissions/index";
 import * as passport from "passport";
+import { createContext } from "./context";
 
 const PORT = process.env.PORT;
 passport.initialize();
 const server = new GraphQLServer({
   schema,
   middlewares: [permissions],
-  context: async (req, res) => ({
-    req,
-    res,
-    user: await getUser(req, res)
-  })
+  context: createContext
 });
 server.start({ port: PORT }, () =>
   console.log(`Server is running on http://localhost:${PORT}`)

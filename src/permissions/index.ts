@@ -3,8 +3,7 @@ import { isAuthenticated } from "./rules";
 export const permissions = shield(
   {
     Query: {
-      currentUser: isAuthenticated,
-      isPostLiked: isAuthenticated
+      currentUser: isAuthenticated
     },
     Mutation: {
       createComment: isAuthenticated,

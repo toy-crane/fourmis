@@ -1,10 +1,12 @@
 import * as passport from "passport";
+import { Request, Response } from "express";
 import {
   Strategy as JWTStrategy,
   ExtractJwt,
   VerifiedCallback
 } from "passport-jwt";
-import { prisma } from "../../generated/prisma-client";
+import { prisma } from "../prismaClient";
+import { User } from "../gql/User/user/user";
 
 const jwt_options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -12,6 +14,7 @@ const jwt_options = {
 };
 
 const verifyUser: VerifiedCallback = async (payload, done) => {
+  console.log(payload);
   try {
     const user = await prisma.user({ id: payload.id });
     if (user) {
@@ -26,7 +29,12 @@ const verifyUser: VerifiedCallback = async (payload, done) => {
 
 passport.use(new JWTStrategy(jwt_options, verifyUser));
 
-export const authenticateJWT = ({ request: req }, res) => {
+export const authenticateJWT = (
+  originReq: Request,
+  res: Response
+): Promise<User> => {
+  const req = { request: originReq };
+  console.log(req);
   return new Promise((resolve, reject) => {
     passport.authenticate("jwt", { session: false }, (err, user) => {
       if (err) {
