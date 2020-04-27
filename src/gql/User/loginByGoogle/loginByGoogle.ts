@@ -1,24 +1,25 @@
 import generateJWT from "../../../utils/auth/generateJWT";
 import { authenticateGoogle } from "../../../passport/google";
 import { IResolvers } from "graphql-tools";
-import { prisma } from "../../../prismaClient";
+import { Context } from "../../../context";
 
 const mutation: IResolvers = {
   Mutation: {
-    loginByGoogle: async (_, { accessToken, refreshToken }, { req, res }) => {
+    loginByGoogle: async (_, { accessToken, refreshToken }, ctx: Context) => {
+      const { req, res, prisma } = ctx;
       req.body = {
         ...req.body,
         access_token: accessToken,
-        refresh_token: refreshToken
+        refresh_token: refreshToken,
       };
       let user: any;
       const {
-        data: { profile }
+        data: { profile },
       } = await authenticateGoogle(req, res);
       const email = profile.emails[0].value;
       const name = profile.displayName;
       user = await prisma.user.findOne({
-        where: { email }
+        where: { email },
       });
       if (!user) {
         user = await prisma.user.create({ data: { email, name } });
@@ -26,10 +27,10 @@ const mutation: IResolvers = {
       const token = generateJWT(user.id, user.email);
       return {
         user,
-        token
+        token,
       };
-    }
-  }
+    },
+  },
 };
 
 export default mutation;

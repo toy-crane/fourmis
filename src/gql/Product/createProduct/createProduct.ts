@@ -1,17 +1,18 @@
 import { IResolvers } from "graphql-tools";
-import { prisma } from "../../../prismaClient";
+import { Context } from "../../../context";
 
 const mutation: IResolvers = {
   Mutation: {
-    createProduct: async (_, { symbol, engName, korName }) => {
+    createProduct: async (_, { symbol, engName, korName }, ctx: Context) => {
+      const { prisma } = ctx;
       return prisma.product.create({
         data: {
           symbol,
           engName,
-          korName
-        }
+          korName,
+        },
       });
-    }
-  }
+    },
+  },
 };
 export default mutation;

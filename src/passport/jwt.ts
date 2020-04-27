@@ -1,12 +1,12 @@
 import * as passport from "passport";
-import { Request, Response } from "express";
+import { Response } from "express";
 import {
   Strategy as JWTStrategy,
   ExtractJwt,
   VerifiedCallback
 } from "passport-jwt";
-import { prisma } from "../prismaClient";
 import { User } from "../gql/User/user/user";
+import { prisma } from "../context";
 
 const jwt_options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

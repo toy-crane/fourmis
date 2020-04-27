@@ -1,16 +1,17 @@
 import * as bcrypt from "bcryptjs";
 import generateJWT from "../../../utils/auth/generateJWT";
 import { IResolvers } from "graphql-tools";
-import { prisma } from "../../../prismaClient";
+import { Context } from "../../../context";
 
 const mutation: IResolvers = {
   Mutation: {
-    signUp: async (parent, { name, username, password, email }, ctx, info) => {
+    signUp: async (_, { name, username, password, email }, ctx: Context) => {
+      const { prisma } = ctx;
       const hashedPassword = await bcrypt.hash(password, 10);
       const userExists = await prisma.user.findMany({
         where: {
-          OR: [{ email }, { username }]
-        }
+          OR: [{ email }, { username }],
+        },
       });
       if (userExists.length) {
         return new Error("User Already exists");
@@ -20,16 +21,16 @@ const mutation: IResolvers = {
           name,
           username,
           email,
-          password: hashedPassword
-        }
+          password: hashedPassword,
+        },
       });
       const token = generateJWT(user.id, user.email);
       return {
         user,
-        token
+        token,
       };
-    }
-  }
+    },
+  },
 };
 
 export default mutation;

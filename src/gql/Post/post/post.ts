@@ -1,9 +1,10 @@
-import { prisma } from "../../../prismaClient";
 import { IResolvers } from "graphql-tools";
+import { Context } from "../../../context";
 
 const query: IResolvers = {
   Query: {
-    post: async (_, { id }) => {
+    post: async (_, { id }, ctx: Context) => {
+      const { prisma } = ctx;
       const post = await prisma.post.findOne({ where: { id } });
       if (post) {
         const viewsCount = post.viewsCount + 1;
@@ -12,17 +13,19 @@ const query: IResolvers = {
       } else {
         throw Error("Invalid postId");
       }
-    }
+    },
   },
   Post: {
-    commentsCount: async parent => {
+    commentsCount: async (parent, _, ctx: Context) => {
+      const { prisma } = ctx;
       const { id } = parent;
       return await prisma.comment.count({ where: { post: { id } } });
     },
-    likesCount: async (parent, _, { user }) => {
+    likesCount: async (parent, _, ctx: Context) => {
+      const { prisma, user } = ctx;
       const { id } = parent;
       return await prisma.postLike.count({
-        where: { post: { id }, user: { id: user.id } }
+        where: { post: { id }, user: { id: user.id } },
       });
     },
     comments: async (
@@ -32,23 +35,24 @@ const query: IResolvers = {
       return {
         postId,
         cursor,
-        offset
+        offset,
       };
     },
-    isPostLiked: async ({ id }, _, { user }) => {
+    isPostLiked: async ({ id }, _, ctx: Context) => {
+      const { user, prisma } = ctx;
       if (user) {
         const filterOptions = {
           post: { id },
-          user: { id: user.id }
+          user: { id: user.id },
         };
         const postLikes = await prisma.postLike.findMany({
-          where: filterOptions
+          where: filterOptions,
         });
         return postLikes.length ? true : false;
       } else {
         return false;
       }
-    }
-  }
+    },
+  },
 };
 export default query;

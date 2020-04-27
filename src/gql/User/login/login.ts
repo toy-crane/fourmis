@@ -1,12 +1,12 @@
 import * as bcrypt from "bcryptjs";
 import generateJWT from "../../../utils/auth/generateJWT";
 import { IResolvers } from "graphql-tools";
-import { prisma } from "../../../prismaClient";
+import { Context } from "../../../context";
 
 const mutation: IResolvers = {
   Mutation: {
-    login: async (parent, { password, email }, ctx, info) => {
-      const user = await prisma.user.findOne({
+    login: async (_, { password, email }, ctx: Context) => {
+      const user = await ctx.prisma.user.findOne({
         where: {
           email
         }

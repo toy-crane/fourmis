@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { User } from "./gql/User/user/user";
 import getUser from "./utils/auth/getUser";
 
-const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 
 export interface Context {
   prisma: PrismaClient;

@@ -1,15 +1,16 @@
-import { prisma } from "../../../prismaClient";
 import { IResolvers } from "graphql-tools";
+import { Context } from "../../../context";
 
 const query: IResolvers = {
   Comment: {
-    CommentlikesCount: async (parent, _, { user }) => {
-      const { id } = parent;
+    CommentlikesCount: async ({ id }, _, ctx: Context) => {
+      const { user, prisma } = ctx;
       return await prisma.commentLike.count({
         where: { comment: { id }, user: { id: user.id } }
       });
     },
-    isCommentLiked: async ({ id }, _, { user }) => {
+    isCommentLiked: async ({ id }, _, ctx: Context) => {
+      const { user, prisma } = ctx;
       if (user) {
         const filterOptions = {
           comment: { id },
