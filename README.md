@@ -18,3 +18,6 @@ prisma deploy
 ```
 yarn start
 ```
+5. .env 추가하기
+prisma 폴더 내에 `.env` 파일 추가
+src 폴더 내에 `.env` 파일 추가
