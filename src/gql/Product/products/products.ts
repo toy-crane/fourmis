@@ -3,9 +3,33 @@ import { Context } from "../../../context";
 
 const query: IResolvers = {
   Query: {
-    products: async (_, {}, ctx: Context) => {
+    products: async (_, { term = null }, ctx: Context) => {
       const { prisma } = ctx;
-      return prisma.product.findMany();
+      let filterCondition;
+      if (term) {
+        filterCondition = {
+          where: {
+            OR: [
+              {
+                symbol: {
+                  startsWith: term,
+                },
+              },
+              {
+                engName: {
+                  startsWith: term,
+                },
+              },
+              {
+                korName: {
+                  startsWith: term,
+                },
+              },
+            ],
+          },
+        };
+      }
+      return prisma.product.findMany(filterCondition);
     },
   },
   Product: {
