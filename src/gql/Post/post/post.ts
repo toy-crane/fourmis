@@ -53,6 +53,17 @@ const query: IResolvers = {
         return false;
       }
     },
+    user: async ({ id }, __, ctx: Context) => {
+      const { prisma } = ctx;
+      const users = await prisma.user.findMany({
+        where: {
+          posts: {
+            every: { id },
+          },
+        },
+      });
+      return users[0];
+    },
   },
 };
 export default query;
