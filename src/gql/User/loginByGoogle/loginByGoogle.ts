@@ -5,7 +5,11 @@ import { Context } from "../../../context";
 
 const mutation: IResolvers = {
   Mutation: {
-    loginByGoogle: async (_, { accessToken, refreshToken }, ctx: Context) => {
+    loginByGoogle: async (
+      _,
+      { accessToken, refreshToken = " " },
+      ctx: Context
+    ) => {
       const { req, res, prisma } = ctx;
       req.body = {
         ...req.body,
