@@ -2,6 +2,16 @@ import { IResolvers } from "graphql-tools";
 import { Context } from "../../../context";
 
 const query: IResolvers = {
+  Query: {
+    comments: async (
+      _,
+      { postId, cursor = new Date().toISOString(), offset = 10 }
+    ) => ({
+      postId,
+      cursor,
+      offset,
+    }),
+  },
   CommentsConnection: {
     edges: async ({ postId, cursor, offset }, _, ctx: Context) => {
       const { prisma } = ctx;
