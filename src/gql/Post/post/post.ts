@@ -55,14 +55,8 @@ const query: IResolvers = {
     },
     user: async ({ id }, __, ctx: Context) => {
       const { prisma } = ctx;
-      const users = await prisma.user.findMany({
-        where: {
-          posts: {
-            every: { id },
-          },
-        },
-      });
-      return users[0];
+      const post = await prisma.post.findOne({ where: { id } });
+      return await prisma.user.findOne({ where: { id: post.userId } });
     },
   },
 };
