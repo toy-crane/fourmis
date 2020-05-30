@@ -1,5 +1,6 @@
 import { IResolvers } from "graphql-tools";
 import { Context } from "../../../context";
+import { Comment } from "../../../../generated/prisma-client/index";
 
 const query: IResolvers = {
   Comment: {
@@ -26,14 +27,9 @@ const query: IResolvers = {
     },
     user: async ({ id }, __, ctx: Context) => {
       const { prisma } = ctx;
-      const users = await prisma.user.findMany({
-        where: {
-          comments: {
-            every: { id },
-          },
-        },
-      });
-      return users[0];
+      const comment = await prisma.comment.findOne({ where: { id } });
+      const userId = comment.userId;
+      return await prisma.user.findOne({ where: { id: userId } });
     },
   },
 };
