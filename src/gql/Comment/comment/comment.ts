@@ -1,6 +1,5 @@
 import { IResolvers } from "graphql-tools";
 import { Context } from "../../../context";
-import { Comment } from "../../../../generated/prisma-client/index";
 
 const query: IResolvers = {
   Comment: {

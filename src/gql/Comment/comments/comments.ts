@@ -21,7 +21,7 @@ const query: IResolvers = {
           createdAt: { lt: cursor },
         },
         first: offset,
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: "asc" },
       });
       const commentEdges = comments.map((comment) => ({
         cursor: comment.createdAt,
