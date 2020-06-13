@@ -2,6 +2,12 @@ import { IResolvers } from "graphql-tools";
 import { Context } from "../../../context";
 
 const query: IResolvers = {
+  Query: {
+    comment: async (_, { id }, ctx: Context) => {
+      const { prisma } = ctx;
+      return await prisma.comment.findOne({ where: { id } });
+    },
+  },
   Comment: {
     CommentlikesCount: async ({ id }, _, ctx: Context) => {
       const { user, prisma } = ctx;

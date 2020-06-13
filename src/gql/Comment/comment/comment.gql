@@ -8,3 +8,7 @@ type Comment {
   createdAt: DateTime
   updatedAt: DateTime
 }
+
+type Query {
+  comment(id: String): Comment
+}
